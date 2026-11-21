@@ -1,6 +1,6 @@
 :root {
   --bg: #f6f6f4; --card: #ffffff; --card2: #efefec; --line: rgba(0,0,0,0.1);
-  --text: #111111; --mute: #6b6b66; --accent: #facc15; --on-accent: #2b2200;
+  --text: #111111; --mute: #6b6b66; --accent: #d97757; --on-accent: #2a1007;
   --ok: #059669; --ok-bg: rgba(5,150,105,0.12); --bad: #dc2626; --bad-bg: rgba(220,38,38,0.1);
   color-scheme: light;
   box-sizing: border-box;
@@ -100,3 +100,32 @@ kbd { min-width: 24px; padding: 2px 7px; border-radius: 8px; background: var(--c
 .sc li span { display: flex; align-items: center; gap: 4px; flex: none; color: var(--text); }
 .right { gap: 6px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+.qn.lg { font-size: 12px; }
+.topicbar { display: flex; align-items: center; gap: 12px; margin: 0 0 14px; min-width: 0; }
+.tbtn { flex: none; display: flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 13px; box-shadow: 0 10px 22px -12px var(--accent); }
+.cur { min-width: 0; font-size: 12px; font-weight: 600; color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.drawer { position: fixed; inset: 0; z-index: 20; display: flex; justify-content: center; align-items: flex-start; padding: max(16px, env(safe-area-inset-top, 0px)) 16px max(16px, env(safe-area-inset-bottom, 0px)); background: rgba(0,0,0,0.55); }
+.drawer[hidden] { display: none; }
+.dcard { width: 100%; max-width: 560px; max-height: 100%; display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line); border-radius: 22px; overflow: hidden; }
+.dhead { display: flex; align-items: center; gap: 10px; padding: 14px 14px 10px 20px; }
+.dhead h2 { margin: 0; flex: 1; font-size: 17px; letter-spacing: -0.01em; }
+.dsearch { padding: 0 14px 10px; }
+.dsearch input { width: 100%; padding: 11px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--card2); color: var(--text); font: inherit; font-size: 15px; }
+.dsearch input:focus { outline: 2px solid var(--accent); outline-offset: 0; }
+.dlist { overflow-y: auto; overscroll-behavior: contain; padding: 0 8px 12px; }
+.ghead { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 14px 12px 6px; text-align: left; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); }
+button.ghead:hover span { color: var(--text); }
+.ghead span { text-transform: none; letter-spacing: 0; font-size: 12px; }
+.trow { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; padding: 11px 12px; border-radius: 14px; text-align: left; font-size: 14px; font-weight: 500; }
+.trow:hover { background: var(--card2); }
+.trow.on { background: color-mix(in srgb, var(--accent) 20%, var(--card2)); }
+.trow.all { margin-bottom: 4px; background: var(--accent); color: var(--on-accent); font-weight: 700; }
+.trow.all small { color: inherit; opacity: 0.7; }
+.tn { min-width: 0; overflow-wrap: anywhere; }
+.tn small { display: block; font-size: 12px; font-weight: 500; color: var(--mute); }
+.tc { flex: none; padding: 2px 9px; border-radius: 999px; background: var(--card2); font-size: 12px; font-weight: 600; color: var(--mute); }
+.trow:hover .tc { background: var(--card); }
+.trow.all .tc { background: rgba(0,0,0,0.12); color: inherit; }
+mark { background: var(--accent); color: var(--on-accent); border-radius: 3px; padding: 0 1px; }
+.dempty { padding: 28px 12px; text-align: center; color: var(--mute); }

@@ -98,6 +98,9 @@ const T = [
     ["The Hamiltonian Cycle decision problem is classified as:", ["P", "NP-complete", "Always O(n)", "Always O(log n)"], 1]
   ]}
 ];
+const GROUPS = ["Core algorithms", "BSTS301 · CAT-1", "CAT-2 · 200 MCQ bank"];
+T.forEach((t) => { if (t.g == null) t.g = 0; });
+if (typeof EXTRA !== "undefined") T.push(...EXTRA);
 const COLORS = T.map(() => "var(--accent)");
 const ALL = [];
 T.forEach((t, ti) => t.q.forEach((x) => ALL.push({ id: ALL.length + 1, ti, text: x[0], opts: x[1], ans: x[2], note: x[3] || "" })));
@@ -105,32 +108,70 @@ T.forEach((t, ti) => t.q.forEach((x) => ALL.push({ id: ALL.length + 1, ti, text:
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const L = "ABCD";
-let mode = "practice", tab = -1, ans = {}, quiz = null;
+let mode = "practice", tab = -1, sq = "", ans = {}, quiz = null;
 try { ans = JSON.parse(localStorage.getItem("mcq-ans") || "{}"); } catch (e) { ans = {}; }
 const save = () => { try { localStorage.setItem("mcq-ans", JSON.stringify(ans)); } catch (e) {} };
-const pool = () => (tab < 0 ? ALL : ALL.filter((q) => q.ti === tab));
-const title = () => (tab < 0 ? "All topics" : T[tab].n);
+try { const st = localStorage.getItem("mcq-tab"); if (/^g\d$/.test(st) && Number(st[1]) < GROUPS.length) tab = st; else if (/^\d+$/.test(st) && Number(st) < T.length) tab = Number(st); } catch (e) {}
+const words = (s) => s.toLowerCase().split(/\s+/).filter(Boolean);
+const hay = (q) => (q.text + " " + q.opts.join(" ") + " " + T[q.ti].n).toLowerCase();
+const matches = (q, w) => { const h = hay(q); return w.every((x) => h.includes(x)); };
+const pool = () => tab === "s" ? ALL.filter((q) => matches(q, words(sq))) : typeof tab === "string" ? ALL.filter((q) => T[q.ti].g === Number(tab.slice(1))) : tab < 0 ? ALL : ALL.filter((q) => q.ti === tab);
+const title = () => tab === "s" ? "Search: \u201c" + sq + "\u201d" : typeof tab === "string" ? GROUPS[Number(tab.slice(1))] : tab < 0 ? "All topics" : T[tab].n;
 
-function tabsHtml() {
-  const mk = (i, name, n) => `<button class="tab" role="tab" data-t="${i}" aria-selected="${tab === i}">${esc(name)}<b>${n}</b></button>`;
-  $("#tabs").innerHTML = mk(-1, "All", ALL.length) + T.map((t, i) => mk(i, t.n, t.q.length)).join("");
+function topicBar() {
+  const sub = typeof tab === "number" && tab >= 0 ? GROUPS[T[tab].g] : T.length + " topics \u00b7 " + ALL.length + " questions";
+  $("#cur").textContent = sub;
 }
 
-function card(q) {
+const hl = (s, w) => { let h = esc(s); w.forEach((x) => { h = h.replace(new RegExp("(" + x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi"), "<mark>$1</mark>"); }); return h; };
+function drawerList() {
+  const w = words($("#dq").value), searching = w.length > 0;
+  const hits = searching ? ALL.filter((q) => matches(q, w)) : [];
+  const row = (val, name, list, extra) => {
+    const done = list.filter((q) => ans[q.id] != null).length;
+    return `<button class="trow${String(tab) === String(val) ? " on" : ""}" data-t="${val}"><span class="tn">${name}${extra || ""}</span><span class="tc">${searching ? list.length : done + "/" + list.length}</span></button>`;
+  };
+  let html = "";
+  if (searching && hits.length) html += `<button class="trow all" data-t="s"><span class="tn">Study all ${hits.length} matching question${hits.length === 1 ? "" : "s"}<small>Across every topic</small></span><span class="tc">\u2192</span></button>`;
+  if (!searching) html += row(-1, "All topics", ALL);
+  GROUPS.forEach((g, gi) => {
+    let rows = "";
+    T.forEach((t, ti) => {
+      const nameHit = w.every((x) => t.n.toLowerCase().includes(x));
+      const qs = ALL.filter((q) => q.ti === ti), m = searching ? qs.filter((q) => matches(q, w)) : qs;
+      if (t.g !== gi || (searching && !nameHit && !m.length)) return;
+      rows += row(ti, hl(t.n, w), searching ? m : qs, searching && m.length ? `<small>${m.length} matching question${m.length === 1 ? "" : "s"}</small>` : "");
+    });
+    if (!rows) return;
+    html += searching ? `<div class="ghead">${esc(g)}</div>` : `<button class="ghead" data-t="g${gi}">${esc(g)}<span>Study all \u2192</span></button>`;
+    html += rows;
+  });
+  if (searching && !hits.length && !html) html = `<div class="dempty">No topics or questions match \u201c${esc($("#dq").value.trim())}\u201d.</div>`;
+  $("#dlist").innerHTML = html;
+}
+function openDrawer() {
+  $("#drawer").hidden = false; document.body.style.overflow = "hidden";
+  drawerList();
+  const on = document.querySelector("#dlist .trow.on"); if (on) on.scrollIntoView({ block: "center" });
+  if (matchMedia("(hover: hover)").matches) $("#dq").focus();
+}
+function closeDrawer() { $("#drawer").hidden = true; document.body.style.overflow = ""; }
+
+function card(q, pos) {
   const p = ans[q.id];
   const opts = q.opts.map((o, i) => {
     const c = p == null ? "" : i === q.ans ? "ok" : i === p ? "bad" : "dim";
     return `<button class="opt ${c}" data-q="${q.id}" data-o="${i}" ${p == null ? "" : "disabled"}><b>${L[i]}</b><span>${esc(o)}</span></button>`;
   }).join("");
   const note = p != null && q.note ? `<p class="note">${esc(q.note)}</p>` : "";
-  return `<article class="q ${p != null ? "done" : ""}" id="q${q.id}" style="--pc:${COLORS[q.ti]}"><span class="qn">${q.id}</span><div><span class="tag">${esc(T[q.ti].n)}</span><p class="qt">${esc(q.text)}</p><div class="opts">${opts}</div>${note}</div></article>`;
+  return `<article class="q ${p != null ? "done" : ""}" id="q${q.id}" style="--pc:${COLORS[q.ti]}"><span class="qn${pos > 99 ? " lg" : ""}">${pos}</span><div><span class="tag">${esc(T[q.ti].n)}</span><p class="qt">${esc(q.text)}</p><div class="opts">${opts}</div>${note}</div></article>`;
 }
 
 function practice() {
   const list = pool();
   const done = list.filter((q) => ans[q.id] != null).length;
   const right = list.filter((q) => ans[q.id] === q.ans).length;
-  $("#view").innerHTML = `<div class="bar"><h1>${esc(title())}</h1><span class="pill">${done}/${list.length} done · ${right} right</span></div>` + list.map(card).join("") + `<div class="row"><span></span><button class="link" id="reset">Reset answers</button></div>`;
+  $("#view").innerHTML = `<div class="bar"><h1>${esc(title())}</h1><span class="pill">${done}/${list.length} done · ${right} right</span></div>` + list.map((q, i) => card(q, i + 1)).join("") + `<div class="row"><span></span><button class="link" id="reset">Reset answers</button></div>`;
 }
 
 function start() {
@@ -161,14 +202,21 @@ function quizView() {
 }
 
 function render() {
-  tabsHtml();
+  topicBar();
   document.querySelectorAll("#mode button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.m === mode)));
   if (mode === "practice") practice(); else quizView();
 }
 
 document.addEventListener("click", (e) => {
   const t = e.target.closest("button"); if (!t) return;
-  if (t.dataset.t != null) { tab = Number(t.dataset.t); quiz = null; render(); window.scrollTo(0, 0); }
+  if (t.dataset.t != null) {
+    const v = t.dataset.t;
+    if (v === "s") { tab = "s"; sq = $("#dq").value.trim(); } else tab = /^g/.test(v) ? v : Number(v);
+    try { localStorage.setItem("mcq-tab", tab === "s" ? "-1" : String(tab)); } catch (err) {}
+    quiz = null; closeDrawer(); render(); window.scrollTo(0, 0);
+  }
+  else if (t.id === "topics") openDrawer();
+  else if (t.id === "dclose") closeDrawer();
   else if (t.closest("#mode")) { mode = t.dataset.m; quiz = null; render(); }
   else if (t.id === "theme") {
     const el = document.documentElement, dark = getComputedStyle(el).colorScheme === "dark";
@@ -177,19 +225,21 @@ document.addEventListener("click", (e) => {
   }
   else if (t.id === "keys") $("#guide").hidden = false;
   else if (t.id === "gclose") $("#guide").hidden = true;
-  else if (t.id === "reset") { if (confirm("Clear your answers" + (tab < 0 ? "?" : " for " + T[tab].n + "?"))) { pool().forEach((q) => delete ans[q.id]); save(); render(); } }
+  else if (t.id === "reset") { if (confirm("Clear your answers" + (tab < 0 ? "?" : " for " + title() + "?"))) { pool().forEach((q) => delete ans[q.id]); save(); render(); } }
   else if (t.id === "start") start();
   else if (t.id === "exit") { quiz = null; render(); }
   else if (t.id === "next") { if (quiz.i + 1 === quiz.list.length) quiz.done = true; else quiz.i++; quizView(); window.scrollTo(0, 0); }
   else if (t.classList.contains("opt") && t.dataset.q && ans[t.dataset.q] == null) {
     const q = ALL[t.dataset.q - 1]; ans[q.id] = Number(t.dataset.o); save();
-    $("#q" + q.id).outerHTML = card(q);
+    $("#q" + q.id).outerHTML = card(q, pool().indexOf(q) + 1);
     const list = pool(), done = list.filter((x) => ans[x.id] != null).length, right = list.filter((x) => ans[x.id] === x.ans).length;
     document.querySelector(".bar .pill").textContent = done + "/" + list.length + " done · " + right + " right";
   }
   else if (t.classList.contains("opt") && quiz && !quiz.done) { quiz.picks[quiz.i] = Number(t.dataset.o); quizView(); }
 });
 
+$("#drawer").addEventListener("click", (e) => { if (e.target.id === "drawer") closeDrawer(); });
+$("#dq").addEventListener("input", drawerList);
 $("#guide").addEventListener("click", (e) => { if (e.target.id === "guide") e.target.hidden = true; });
 
 function curCard() {
@@ -201,9 +251,16 @@ function pickCard() {
   return cs.slice(i).find((c) => !c.classList.contains("done") && c.getBoundingClientRect().top < innerHeight) || cs[i];
 }
 document.addEventListener("keydown", (e) => {
+  if (e.target.matches && e.target.matches("input")) {
+    if (e.key === "Escape") { if ($("#dq").value) { $("#dq").value = ""; drawerList(); } else closeDrawer(); }
+    else if (e.key === "Enter") { const f = document.querySelector("#dlist .trow"); if (f) f.click(); }
+    return;
+  }
   if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
   const k = e.key.toLowerCase(), g = $("#guide");
-  if (k === "escape") { g.hidden = true; return; }
+  if (k === "escape") { g.hidden = true; closeDrawer(); return; }
+  if (!$("#drawer").hidden) return;
+  if (k === "/") { e.preventDefault(); openDrawer(); return; }
   if (k === "?") { g.hidden = !g.hidden; return; }
   if (!g.hidden) return;
   if (k === "enter" && e.target.closest && e.target.closest("button")) return;
