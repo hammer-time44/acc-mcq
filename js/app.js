@@ -108,15 +108,17 @@ T.forEach((t, ti) => t.q.forEach((x) => ALL.push({ id: ALL.length + 1, ti, text:
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const L = "ABCD";
+const pillText = (list) => tab === "m" ? list.length + " to review" : list.filter((q) => ans[q.id] != null).length + "/" + list.length + " done \u00b7 " + list.filter((q) => ans[q.id] === q.ans).length + " right";
 let mode = "practice", tab = -1, sq = "", ans = {}, quiz = null;
 try { ans = JSON.parse(localStorage.getItem("mcq-ans") || "{}"); } catch (e) { ans = {}; }
 const save = () => { try { localStorage.setItem("mcq-ans", JSON.stringify(ans)); } catch (e) {} };
-try { const st = localStorage.getItem("mcq-tab2"); if (/^g\d$/.test(st) && Number(st[1]) < GROUPS.length) tab = st; else if (/^\d+$/.test(st) && Number(st) < T.length) tab = Number(st); } catch (e) {}
+try { const st = localStorage.getItem("mcq-tab2"); if (/^g\d$/.test(st) && Number(st[1]) < GROUPS.length) tab = st; else if (/^\d+$/.test(st) && Number(st) < T.length) tab = Number(st); else if (st === "m") tab = "m"; } catch (e) {}
 const words = (s) => s.toLowerCase().split(/\s+/).filter(Boolean);
 const hay = (q) => (q.text + " " + q.opts.join(" ") + " " + T[q.ti].n).toLowerCase();
 const matches = (q, w) => { const h = hay(q); return w.every((x) => h.includes(x)); };
-const pool = () => tab === "s" ? ALL.filter((q) => matches(q, words(sq))) : typeof tab === "string" ? ALL.filter((q) => T[q.ti].g === Number(tab.slice(1))) : tab < 0 ? ALL : ALL.filter((q) => q.ti === tab);
-const title = () => tab === "s" ? "Search: \u201c" + sq + "\u201d" : typeof tab === "string" ? GROUPS[Number(tab.slice(1))] : tab < 0 ? "All topics" : T[tab].n;
+const isMiss = (q) => ans[q.id] != null && ans[q.id] !== q.ans;
+const pool = () => tab === "m" ? ALL.filter(isMiss) : tab === "s" ? ALL.filter((q) => matches(q, words(sq))) : typeof tab === "string" ? ALL.filter((q) => T[q.ti].g === Number(tab.slice(1))) : tab < 0 ? ALL : ALL.filter((q) => q.ti === tab);
+const title = () => tab === "m" ? "Mistakes" : tab === "s" ? "Search: \u201c" + sq + "\u201d" : typeof tab === "string" ? GROUPS[Number(tab.slice(1))] : tab < 0 ? "All topics" : T[tab].n;
 
 const hl = (s, w) => { let h = esc(s); w.forEach((x) => { h = h.replace(new RegExp("(" + x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi"), "<mark>$1</mark>"); }); return h; };
 const secOf = () => typeof tab === "number" && tab >= 0 ? T[tab].g : typeof tab === "string" && tab[0] === "g" ? Number(tab.slice(1)) : -1;
@@ -127,9 +129,9 @@ function headerBars(recenter) {
   $("#secs").innerHTML = `<button class="sec${tab === -1 ? " on" : ""}" data-t="-1">All<b>${ALL.length}</b></button>` + GROUPS.map((g, i) => {
     const n = ALL.filter((q) => T[q.ti].g === i).length, open = sec === i && !searching;
     return `<button class="sec${secOf() === i && !searching ? " on" : ""}${open ? " open" : ""}" data-s="${i}" aria-expanded="${open}">${esc(g)}<b>${n}</b>${CHEV}</button>`;
-  }).join("");
+  }).join("") + `<button class="sec msec${tab === "m" && !searching ? " on" : ""}" data-t="m">Mistakes<b>${ALL.filter(isMiss).length}</b></button>`;
   const bar = $("#tbar"), keep = bar.scrollLeft;
-  const chip = (val, label, meta, on, cls) => `<button class="chip${on ? " on" : ""}${cls ? " " + cls : ""}" data-t="${val}">${label}${meta ? `<b>${meta}</b>` : ""}</button>`;
+  const chip = (val, label, meta, on, cls, mc) => `<button class="chip${on ? " on" : ""}${cls ? " " + cls : ""}" data-t="${val}">${label}${meta ? `<b${mc ? ` class="${mc}"` : ""}>${meta}</b>` : ""}</button>`;
   let html = "";
   if (searching) {
     const hits = ALL.filter((q) => matches(q, w));
@@ -144,7 +146,8 @@ function headerBars(recenter) {
     html += chip("g" + sec, "All " + esc(GROUPS[sec]), "", tab === "g" + sec, "all");
     T.map((t, ti) => ({ t, ti })).filter((x) => x.t.g === sec).sort((a, b) => (a.t.n === "Natural Sort Order") - (b.t.n === "Natural Sort Order")).forEach(({ t, ti }) => {
       const qs = ALL.filter((q) => q.ti === ti);
-      html += chip(ti, esc(t.n), qs.filter((q) => ans[q.id] != null).length + "/" + qs.length, tab === ti);
+      const dn = qs.filter((q) => ans[q.id] != null).length;
+      html += chip(ti, esc(t.n), dn + "/" + qs.length, tab === ti, "", dn === 0 ? "" : dn === qs.length ? "complete" : "partial");
     });
   }
   bar.hidden = !html; bar.innerHTML = html; bar.scrollLeft = keep;
@@ -174,21 +177,63 @@ addEventListener("scroll", () => {
   lastY = y;
 }, { passive: true });
 
+const KW = /^(if|for|while|switch)\s*\(.*\)$/;
+function pretty(src) {
+  const out = []; let cur = "", depth = 0, extra = 0, par = 0, q = null, ind = 0; const ifs = [];
+  const start = (o) => { if (!cur) ind = o != null ? o : depth + extra; };
+  const flush = () => { if (cur.trim()) out.push("    ".repeat(ind) + cur.trim()); cur = ""; };
+  const nxt = (i) => src.slice(i + 1).trimStart();
+  for (let i = 0; i < src.length; i++) {
+    const c = src[i];
+    if (q) { cur += c; if (c === q && src[i - 1] !== "\\") q = null; continue; }
+    if (c === " " && !cur) continue;
+    if (!cur && /^else\b/.test(src.slice(i))) start(ifs.length ? ifs.pop() : depth + extra); else start();
+    if (c === '"' || c === "'") { q = c; cur += c; continue; }
+    if (c === "(") { par++; cur += c; continue; }
+    if (c === ")") {
+      par--; cur += c;
+      if (par === 0 && KW.test(cur.replace(/^}\s*/, "").replace(/^else\s+/, "").trim())) {
+        const n = nxt(i)[0];
+        if (n && n !== "{" && n !== ";") { if (/^(if)\b/.test(cur.replace(/^}\s*/, "").replace(/^else\s+/, "").trim())) ifs.push(ind); flush(); extra++; }
+        else if (n === "{" && /^if\b/.test(cur.trim())) ifs.push(ind);
+      }
+      continue;
+    }
+    if (par > 0) { cur += c; continue; }
+    if (c === ";") { cur += c; flush(); extra = 0; continue; }
+    if (c === "{") { cur = cur.trimEnd() + " {"; flush(); depth++; extra = 0; continue; }
+    if (c === "}") { flush(); depth--; extra = 0; cur = ""; ind = depth; cur = "}"; if (/^(else|while)\b/.test(nxt(i))) { cur += " "; } else flush(); continue; }
+    if (c === ":" && /^(case\b|default$)/.test(cur.trim())) { cur += c; flush(); extra = 1; continue; }
+    if (/^else\b/.test(cur) && /^else$/.test(cur.trim()) && /\s/.test(c)) { flush(); const n = nxt(i)[0]; if (n !== "{") extra = ind - depth + 1; else { cur = "else"; } continue; }
+    cur += c;
+  }
+  flush();
+  return out.join("\n");
+}
+function fmtQ(text) {
+  let m;
+  if ((m = text.match(/^([^\n]*?)\n(\[.*)$/s))) return `<p class="qt">${esc(m[1])}</p><pre class="code"><code>${esc(m[2])}</code></pre>`;
+  if ((m = text.match(/^Consider the code:\s*(.*?)\s*(What[^?]*\?)$/))) return `<p class="qt">Consider the code:</p><pre class="code"><code>${esc(pretty(m[1]))}</code></pre><p class="qt">${esc(m[2])}</p>`;
+  if ((m = text.match(/^(What is the output of)\s+(.*?;)\s*\?$/))) return `<p class="qt">${esc(m[1])} the following?</p><pre class="code"><code>${esc(pretty(m[2]))}</code></pre>`;
+  if ((m = text.match(/^([^?]*\?)\s*((?:int |for\s*\(|while\s*\(|do\s*\{|do\{)[^]*)$/))) return `<p class="qt">${esc(m[1])}</p><pre class="code"><code>${esc(pretty(m[2]))}</code></pre>`;
+  return `<p class="qt">${esc(text)}</p>`;
+}
+const optHtml = (o) => /;|=\s|\bimport\b|\bnew\b/.test(o) ? `<code class="inl">${esc(o)}</code>` : esc(o);
+
 function card(q, pos) {
   const p = ans[q.id];
   const opts = q.opts.map((o, i) => {
     const c = p == null ? "" : i === q.ans ? "ok" : i === p ? "bad" : "dim";
-    return `<button class="opt ${c}" data-q="${q.id}" data-o="${i}" ${p == null ? "" : "disabled"}><b>${L[i]}</b><span>${esc(o)}</span></button>`;
+    return `<button class="opt ${c}" data-q="${q.id}" data-o="${i}" ${p == null ? "" : "disabled"}><b>${L[i]}</b><span>${optHtml(o)}</span></button>`;
   }).join("");
   const note = p != null && q.note ? `<p class="note">${esc(q.note)}</p>` : "";
-  return `<article class="q ${p != null ? "done" : ""}" id="q${q.id}" style="--pc:${COLORS[q.ti]}"><span class="qn${pos > 99 ? " lg" : ""}">${pos}</span><div><span class="tag">${esc(T[q.ti].n)}</span><p class="qt">${esc(q.text)}</p><div class="opts">${opts}</div>${note}</div></article>`;
+  return `<article class="q ${p != null ? "done" + (p !== q.ans ? " wrong" : "") : ""}" id="q${q.id}" style="--pc:${COLORS[q.ti]}"><span class="qn${pos > 99 ? " lg" : ""}">${pos}</span><div><span class="tag">${esc(T[q.ti].n)}</span>${fmtQ(q.text)}<div class="opts">${opts}</div>${note}${tab === "m" && p != null ? `<button class="link rt" data-retry="${q.id}">Retry this question</button>` : ""}</div></article>`;
 }
 
 function practice() {
   const list = pool();
-  const done = list.filter((q) => ans[q.id] != null).length;
-  const right = list.filter((q) => ans[q.id] === q.ans).length;
-  $("#view").innerHTML = `<div class="bar"><h1>${esc(title())}</h1><span class="pr"><span class="pn"><button class="icon" data-go="-1" aria-label="Previous topic" title="Previous topic (\u2190)">\u2039</button><button class="icon" data-go="1" aria-label="Next topic" title="Next topic (\u2192)">\u203a</button></span><span class="pill">${done}/${list.length} done · ${right} right</span></span></div>` + list.map((q, i) => card(q, i + 1)).join("") + `<div class="row"><span></span><button class="link" id="reset">Reset answers</button></div>`;
+  if (tab === "m" && !list.length) { $("#view").innerHTML = `<div class="bar"><h1>Mistakes</h1></div><div class="panel"><h1>Nothing here</h1><p>Questions you get wrong will stack up here.</p></div>`; return; }
+  $("#view").innerHTML = `<div class="bar"><h1>${esc(title())}</h1><span class="pr"><span class="pn"><button class="icon" data-go="-1" aria-label="Previous topic" title="Previous topic (\u2190)">\u2039</button><button class="icon" data-go="1" aria-label="Next topic" title="Next topic (\u2192)">\u203a</button></span><span class="pill">${pillText(list)}</span></span></div>` + list.map((q, i) => card(q, i + 1)).join("") + `<div class="row"><span></span>${tab === "m" ? `<button class="link" id="retryall">Retry all mistakes</button>` : `<button class="link" id="reset">Reset answers</button>`}</div>`;
 }
 
 function start() {
@@ -212,14 +257,14 @@ function quizView() {
     return;
   }
   const q = list[i], p = picks[i];
-  const opts = q.opts.map((o, k) => `<button class="opt ${p === k ? "sel" : ""}" data-o="${k}"><b>${L[k]}</b><span>${esc(o)}</span></button>`).join("");
+  const opts = q.opts.map((o, k) => `<button class="opt ${p === k ? "sel" : ""}" data-o="${k}"><b>${L[k]}</b><span>${optHtml(o)}</span></button>`).join("");
   $("#view").innerHTML = `<div class="bar"><h1>${esc(title())}</h1><span class="pill">${i + 1} of ${list.length}</span></div><div class="prog"><u style="width:${(i / list.length) * 100}%"></u></div>` +
-    `<article class="q" style="--pc:${COLORS[q.ti]}"><span class="qn">${i + 1}</span><div><span class="tag">${esc(T[q.ti].n)}</span><p class="qt">${esc(q.text)}</p><div class="opts">${opts}</div></div></article>` +
+    `<article class="q" style="--pc:${COLORS[q.ti]}"><span class="qn">${i + 1}</span><div><span class="tag">${esc(T[q.ti].n)}</span>${fmtQ(q.text)}<div class="opts">${opts}</div></div></article>` +
     `<div class="row"><button class="link" id="exit">End quiz</button><button class="btn" id="next" ${p == null ? "disabled" : ""}>${i + 1 === list.length ? "Finish" : "Next"}</button></div>`;
 }
 
 function render() {
-  headerBars(true);
+  headerBars(true); syncSearch();
   document.querySelectorAll("#mode button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.m === mode)));
   if (mode === "practice") practice(); else quizView();
 }
@@ -228,7 +273,7 @@ document.addEventListener("click", (e) => {
   const t = e.target.closest("button"); if (!t) return;
   if (t.dataset.t != null) {
     const v = t.dataset.t;
-    if (v === "s") { tab = "s"; sq = $("#dq").value.trim(); } else { tab = /^g/.test(v) ? v : Number(v); sec = secOf(); if (tab === -1) { $("#dq").value = ""; sec = -1; } }
+    if (v === "s") { tab = "s"; sq = $("#dq").value.trim(); } else if (v === "m") { tab = "m"; $("#dq").value = ""; sec = -1; } else { tab = /^g/.test(v) ? v : Number(v); sec = secOf(); if (tab === -1) { $("#dq").value = ""; sec = -1; } }
     try { localStorage.setItem("mcq-tab2", tab === "s" ? "-1" : String(tab)); } catch (err) {}
     quiz = null; render(); window.scrollTo(0, 0);
   }
@@ -240,23 +285,28 @@ document.addEventListener("click", (e) => {
     const next = dark ? "light" : "dark"; el.setAttribute("data-theme", next);
     try { localStorage.setItem("mcq-theme", next); } catch (err) {}
   }
+  else if (t.id === "sbtn") { const b = $("#sbox"); if (b.classList.contains("open") && !$("#dq").value) b.classList.remove("open"); else { b.classList.add("open"); $("#dq").focus(); } }
   else if (t.id === "keys") $("#guide").hidden = false;
   else if (t.id === "gclose") $("#guide").hidden = true;
   else if (t.id === "reset") { if (confirm("Clear your answers" + (tab < 0 ? "?" : " for " + title() + "?"))) { pool().forEach((q) => delete ans[q.id]); save(); render(); } }
+  else if (t.id === "retryall") { pool().forEach((q) => delete ans[q.id]); save(); render(); }
+  else if (t.dataset.retry != null) { const q = ALL[t.dataset.retry - 1], el = $("#q" + q.id), pos = Number(el.querySelector(".qn").textContent) || 1; delete ans[q.id]; save(); el.outerHTML = card(q, pos); headerBars(); }
   else if (t.id === "start") start();
   else if (t.id === "exit") { quiz = null; render(); }
   else if (t.id === "next") { if (quiz.i + 1 === quiz.list.length) quiz.done = true; else quiz.i++; quizView(); window.scrollTo(0, 0); }
   else if (t.classList.contains("opt") && t.dataset.q && ans[t.dataset.q] == null) {
     const q = ALL[t.dataset.q - 1]; ans[q.id] = Number(t.dataset.o); save();
-    $("#q" + q.id).outerHTML = card(q, pool().indexOf(q) + 1);
-    const list = pool(), done = list.filter((x) => ans[x.id] != null).length, right = list.filter((x) => ans[x.id] === x.ans).length;
-    document.querySelector(".bar .pill").textContent = done + "/" + list.length + " done · " + right + " right";
+    const el = $("#q" + q.id), pos = Number(el.querySelector(".qn").textContent) || pool().indexOf(q) + 1;
+    el.outerHTML = card(q, pos);
+    document.querySelector(".bar .pill").textContent = pillText(pool());
     headerBars();
   }
   else if (t.classList.contains("opt") && quiz && !quiz.done) { quiz.picks[quiz.i] = Number(t.dataset.o); quizView(); }
 });
 
 $("#dq").addEventListener("input", () => headerBars(false));
+const syncSearch = () => { if (!$("#dq").value && document.activeElement !== $("#dq")) $("#sbox").classList.remove("open"); };
+$("#dq").addEventListener("blur", () => setTimeout(syncSearch, 120));
 $("#guide").addEventListener("click", (e) => { if (e.target.id === "guide") e.target.hidden = true; });
 
 function curCard() {
@@ -276,7 +326,7 @@ document.addEventListener("keydown", (e) => {
   if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
   const k = e.key.toLowerCase(), g = $("#guide");
   if (k === "escape") { g.hidden = true; return; }
-  if (k === "/") { e.preventDefault(); $(".hdr").classList.remove("hide"); $("#dq").focus(); return; }
+  if (k === "/") { e.preventDefault(); $(".hdr").classList.remove("hide"); $("#sbox").classList.add("open"); $("#dq").focus(); return; }
   if (k === "?") { g.hidden = !g.hidden; return; }
   if (!g.hidden) return;
   if (k === "enter" && e.target.closest && e.target.closest("button")) return;
