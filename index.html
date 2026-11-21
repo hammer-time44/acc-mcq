@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MCQ Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo"><i></i>MCQ</div>
+    <div class="right">
+      <div class="seg" id="mode"><button data-m="practice" aria-pressed="true">Practice</button><button data-m="quiz" aria-pressed="false">Quiz</button></div>
+      <button class="icon" id="keys" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">?</button>
+      <button class="icon" id="theme" aria-label="Toggle theme">◐</button>
+    </div>
+  </div>
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div id="view"></div>
+  <details class="sc">
+    <summary>Keyboard shortcuts</summary>
+    <ul>
+      <li><span><kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> or <kbd>1</kbd>–<kbd>4</kbd></span>Choose an option</li>
+      <li><span><kbd>Enter</kbd> or <kbd>→</kbd></span>Next question (Quiz)</li>
+      <li><span><kbd>P</kbd> <kbd>Q</kbd></span>Practice / Quiz</li>
+      <li><span><kbd>J</kbd></span>Next unanswered (Practice)</li>
+      <li><span><kbd>T</kbd></span>Light / dark</li>
+      <li><span><kbd>?</kbd></span>Open the shortcuts popup</li>
+    </ul>
+  </details>
+  <div class="guide" id="guide" hidden role="dialog" aria-label="Keyboard shortcuts">
+    <div class="gcard">
+      <h2>Keyboard shortcuts</h2>
+      <ul>
+        <li><span><kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> or <kbd>1</kbd>–<kbd>4</kbd></span>Choose an option</li>
+        <li><span><kbd>Enter</kbd> or <kbd>→</kbd></span>Next question (Quiz)</li>
+        <li><span><kbd>P</kbd> <kbd>Q</kbd></span>Practice / Quiz</li>
+        <li><span><kbd>J</kbd></span>Next unanswered (Practice)</li>
+        <li><span><kbd>T</kbd></span>Light / dark</li>
+        <li><span><kbd>?</kbd></span>Show or hide this guide</li>
+        <li><span><kbd>Esc</kbd></span>Close</li>
+      </ul>
+      <button class="btn" id="gclose">Got it</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
