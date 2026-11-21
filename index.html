@@ -10,35 +10,32 @@
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<div class="wrap">
-  <div class="top">
+<header class="hdr">
+  <div class="hrow">
     <div class="logo"><i></i>MCQ</div>
+    <div class="secrow">
+      <div class="secs" id="secs"></div>
+      <input class="hs" id="dq" type="search" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search topics or questions">
+    </div>
     <div class="right">
       <div class="seg" id="mode"><button data-m="practice" aria-pressed="true">Practice</button><button data-m="quiz" aria-pressed="false">Quiz</button></div>
       <button class="icon" id="keys" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">?</button>
       <button class="icon" id="theme" aria-label="Toggle theme">◐</button>
     </div>
   </div>
-  <div class="topicbar">
-    <button class="tbtn" id="topics" aria-haspopup="dialog"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12"/></svg>Topics</button>
-    <span class="cur" id="cur"></span>
-  </div>
+  <div class="tbar" id="tbar" hidden></div>
+</header>
+<div class="wrap">
   <div id="view"></div>
-  <div class="drawer" id="drawer" hidden role="dialog" aria-label="Topics">
-    <div class="dcard">
-      <div class="dhead"><h2>Topics</h2><button class="icon" id="dclose" aria-label="Close">✕</button></div>
-      <div class="dsearch"><input id="dq" type="search" placeholder="Search topics or questions" autocomplete="off" spellcheck="false" aria-label="Search topics or questions"></div>
-      <div class="dlist" id="dlist"></div>
-    </div>
-  </div>
   <details class="sc">
     <summary>Keyboard shortcuts</summary>
     <ul>
       <li><span><kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> or <kbd>1</kbd>–<kbd>4</kbd></span>Choose an option</li>
       <li><span><kbd>Enter</kbd> or <kbd>→</kbd></span>Next question (Quiz)</li>
+      <li><span><kbd>←</kbd><kbd>→</kbd></span>Previous / next topic</li>
       <li><span><kbd>P</kbd> <kbd>Q</kbd></span>Practice / Quiz</li>
       <li><span><kbd>J</kbd></span>Next unanswered (Practice)</li>
-      <li><span><kbd>/</kbd></span>Topics and search</li>
+      <li><span><kbd>/</kbd></span>Search</li>
       <li><span><kbd>T</kbd></span>Light / dark</li>
       <li><span><kbd>?</kbd></span>Open the shortcuts popup</li>
     </ul>
@@ -49,9 +46,10 @@
       <ul>
         <li><span><kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> or <kbd>1</kbd>–<kbd>4</kbd></span>Choose an option</li>
         <li><span><kbd>Enter</kbd> or <kbd>→</kbd></span>Next question (Quiz)</li>
+      <li><span><kbd>←</kbd><kbd>→</kbd></span>Previous / next topic</li>
         <li><span><kbd>P</kbd> <kbd>Q</kbd></span>Practice / Quiz</li>
         <li><span><kbd>J</kbd></span>Next unanswered (Practice)</li>
-        <li><span><kbd>/</kbd></span>Topics and search</li>
+        <li><span><kbd>/</kbd></span>Search</li>
       <li><span><kbd>T</kbd></span>Light / dark</li>
         <li><span><kbd>?</kbd></span>Show or hide this guide</li>
         <li><span><kbd>Esc</kbd></span>Close</li>

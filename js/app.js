@@ -98,9 +98,9 @@ const T = [
     ["The Hamiltonian Cycle decision problem is classified as:", ["P", "NP-complete", "Always O(n)", "Always O(log n)"], 1]
   ]}
 ];
-const GROUPS = ["Core algorithms", "BSTS301 · CAT-1", "CAT-2 · 200 MCQ bank"];
-T.forEach((t) => { if (t.g == null) t.g = 0; });
-if (typeof EXTRA !== "undefined") T.push(...EXTRA);
+const GROUPS = ["CAT-1", "CAT-2", "FAT"];
+T.forEach((t) => { t.g = t.n === "Natural Sort Order" ? 1 : 2; });
+if (typeof EXTRA !== "undefined") T.push(...EXTRA.map((t) => ({ ...t, g: t.g - 1 })));
 const COLORS = T.map(() => "var(--accent)");
 const ALL = [];
 T.forEach((t, ti) => t.q.forEach((x) => ALL.push({ id: ALL.length + 1, ti, text: x[0], opts: x[1], ans: x[2], note: x[3] || "" })));
@@ -111,51 +111,68 @@ const L = "ABCD";
 let mode = "practice", tab = -1, sq = "", ans = {}, quiz = null;
 try { ans = JSON.parse(localStorage.getItem("mcq-ans") || "{}"); } catch (e) { ans = {}; }
 const save = () => { try { localStorage.setItem("mcq-ans", JSON.stringify(ans)); } catch (e) {} };
-try { const st = localStorage.getItem("mcq-tab"); if (/^g\d$/.test(st) && Number(st[1]) < GROUPS.length) tab = st; else if (/^\d+$/.test(st) && Number(st) < T.length) tab = Number(st); } catch (e) {}
+try { const st = localStorage.getItem("mcq-tab2"); if (/^g\d$/.test(st) && Number(st[1]) < GROUPS.length) tab = st; else if (/^\d+$/.test(st) && Number(st) < T.length) tab = Number(st); } catch (e) {}
 const words = (s) => s.toLowerCase().split(/\s+/).filter(Boolean);
 const hay = (q) => (q.text + " " + q.opts.join(" ") + " " + T[q.ti].n).toLowerCase();
 const matches = (q, w) => { const h = hay(q); return w.every((x) => h.includes(x)); };
 const pool = () => tab === "s" ? ALL.filter((q) => matches(q, words(sq))) : typeof tab === "string" ? ALL.filter((q) => T[q.ti].g === Number(tab.slice(1))) : tab < 0 ? ALL : ALL.filter((q) => q.ti === tab);
 const title = () => tab === "s" ? "Search: \u201c" + sq + "\u201d" : typeof tab === "string" ? GROUPS[Number(tab.slice(1))] : tab < 0 ? "All topics" : T[tab].n;
 
-function topicBar() {
-  const sub = typeof tab === "number" && tab >= 0 ? GROUPS[T[tab].g] : T.length + " topics \u00b7 " + ALL.length + " questions";
-  $("#cur").textContent = sub;
-}
-
 const hl = (s, w) => { let h = esc(s); w.forEach((x) => { h = h.replace(new RegExp("(" + x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi"), "<mark>$1</mark>"); }); return h; };
-function drawerList() {
+const secOf = () => typeof tab === "number" && tab >= 0 ? T[tab].g : typeof tab === "string" && tab[0] === "g" ? Number(tab.slice(1)) : -1;
+let sec = secOf();
+const CHEV = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3.5l3 3 3-3"/></svg>';
+function headerBars(recenter) {
   const w = words($("#dq").value), searching = w.length > 0;
-  const hits = searching ? ALL.filter((q) => matches(q, w)) : [];
-  const row = (val, name, list, extra) => {
-    const done = list.filter((q) => ans[q.id] != null).length;
-    return `<button class="trow${String(tab) === String(val) ? " on" : ""}" data-t="${val}"><span class="tn">${name}${extra || ""}</span><span class="tc">${searching ? list.length : done + "/" + list.length}</span></button>`;
-  };
+  $("#secs").innerHTML = `<button class="sec${tab === -1 ? " on" : ""}" data-t="-1">All<b>${ALL.length}</b></button>` + GROUPS.map((g, i) => {
+    const n = ALL.filter((q) => T[q.ti].g === i).length, open = sec === i && !searching;
+    return `<button class="sec${secOf() === i && !searching ? " on" : ""}${open ? " open" : ""}" data-s="${i}" aria-expanded="${open}">${esc(g)}<b>${n}</b>${CHEV}</button>`;
+  }).join("");
+  const bar = $("#tbar"), keep = bar.scrollLeft;
+  const chip = (val, label, meta, on, cls) => `<button class="chip${on ? " on" : ""}${cls ? " " + cls : ""}" data-t="${val}">${label}${meta ? `<b>${meta}</b>` : ""}</button>`;
   let html = "";
-  if (searching && hits.length) html += `<button class="trow all" data-t="s"><span class="tn">Study all ${hits.length} matching question${hits.length === 1 ? "" : "s"}<small>Across every topic</small></span><span class="tc">\u2192</span></button>`;
-  if (!searching) html += row(-1, "All topics", ALL);
-  GROUPS.forEach((g, gi) => {
-    let rows = "";
+  if (searching) {
+    const hits = ALL.filter((q) => matches(q, w));
+    if (hits.length) html += chip("s", `All ${hits.length} match${hits.length === 1 ? "" : "es"}`, "", tab === "s", "all");
     T.forEach((t, ti) => {
-      const nameHit = w.every((x) => t.n.toLowerCase().includes(x));
-      const qs = ALL.filter((q) => q.ti === ti), m = searching ? qs.filter((q) => matches(q, w)) : qs;
-      if (t.g !== gi || (searching && !nameHit && !m.length)) return;
-      rows += row(ti, hl(t.n, w), searching ? m : qs, searching && m.length ? `<small>${m.length} matching question${m.length === 1 ? "" : "s"}</small>` : "");
+      const m = hits.filter((q) => q.ti === ti).length;
+      if (!m && !w.every((x) => t.n.toLowerCase().includes(x))) return;
+      html += chip(ti, hl(t.n, w), esc(GROUPS[t.g]) + (m ? " \u00b7 " + m : ""), tab === ti);
     });
-    if (!rows) return;
-    html += searching ? `<div class="ghead">${esc(g)}</div>` : `<button class="ghead" data-t="g${gi}">${esc(g)}<span>Study all \u2192</span></button>`;
-    html += rows;
-  });
-  if (searching && !hits.length && !html) html = `<div class="dempty">No topics or questions match \u201c${esc($("#dq").value.trim())}\u201d.</div>`;
-  $("#dlist").innerHTML = html;
+    if (!html) html = `<span class="dempty">No topics or questions match \u201c${esc($("#dq").value.trim())}\u201d.</span>`;
+  } else if (sec >= 0) {
+    html += chip("g" + sec, "All " + esc(GROUPS[sec]), "", tab === "g" + sec, "all");
+    T.map((t, ti) => ({ t, ti })).filter((x) => x.t.g === sec).sort((a, b) => (a.t.n === "Natural Sort Order") - (b.t.n === "Natural Sort Order")).forEach(({ t, ti }) => {
+      const qs = ALL.filter((q) => q.ti === ti);
+      html += chip(ti, esc(t.n), qs.filter((q) => ans[q.id] != null).length + "/" + qs.length, tab === ti);
+    });
+  }
+  bar.hidden = !html; bar.innerHTML = html; bar.scrollLeft = keep;
+  if (recenter && !searching) { const on = bar.querySelector(".chip.on"); if (on) bar.scrollLeft = on.offsetLeft - bar.clientWidth / 2 + on.offsetWidth / 2; }
 }
-function openDrawer() {
-  $("#drawer").hidden = false; document.body.style.overflow = "hidden";
-  drawerList();
-  const on = document.querySelector("#dlist .trow.on"); if (on) on.scrollIntoView({ block: "center" });
-  if (matchMedia("(hover: hover)").matches) $("#dq").focus();
+$("#tbar").addEventListener("wheel", (e) => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { e.currentTarget.scrollLeft += e.deltaY; e.preventDefault(); } }, { passive: false });
+
+function topicList() {
+  const w = words($("#dq").value);
+  const base = GROUPS.flatMap((_, g) => T.map((t, ti) => ({ t, ti })).filter((x) => x.t.g === g).sort((a, b) => (a.t.n === "Natural Sort Order") - (b.t.n === "Natural Sort Order")).map((x) => x.ti));
+  if (!w.length) return base;
+  const hits = ALL.filter((q) => matches(q, w));
+  return base.filter((ti) => hits.some((q) => q.ti === ti) || w.every((x) => T[ti].n.toLowerCase().includes(x)));
 }
-function closeDrawer() { $("#drawer").hidden = true; document.body.style.overflow = ""; }
+function go(d) {
+  const l = topicList(); if (!l.length) return;
+  const i = typeof tab === "number" ? l.indexOf(tab) : -1;
+  tab = l[i < 0 ? (d > 0 ? 0 : l.length - 1) : (i + d + l.length) % l.length]; sec = T[tab].g;
+  try { localStorage.setItem("mcq-tab2", String(tab)); } catch (err) {}
+  quiz = null; render(); window.scrollTo(0, 0);
+}
+let lastY = scrollY;
+addEventListener("scroll", () => {
+  const y = scrollY, h = $(".hdr");
+  if (y < 80 || y < lastY - 4) h.classList.remove("hide");
+  else if (y > lastY + 4 && !h.contains(document.activeElement)) h.classList.add("hide");
+  lastY = y;
+}, { passive: true });
 
 function card(q, pos) {
   const p = ans[q.id];
@@ -171,7 +188,7 @@ function practice() {
   const list = pool();
   const done = list.filter((q) => ans[q.id] != null).length;
   const right = list.filter((q) => ans[q.id] === q.ans).length;
-  $("#view").innerHTML = `<div class="bar"><h1>${esc(title())}</h1><span class="pill">${done}/${list.length} done · ${right} right</span></div>` + list.map((q, i) => card(q, i + 1)).join("") + `<div class="row"><span></span><button class="link" id="reset">Reset answers</button></div>`;
+  $("#view").innerHTML = `<div class="bar"><h1>${esc(title())}</h1><span class="pr"><span class="pn"><button class="icon" data-go="-1" aria-label="Previous topic" title="Previous topic (\u2190)">\u2039</button><button class="icon" data-go="1" aria-label="Next topic" title="Next topic (\u2192)">\u203a</button></span><span class="pill">${done}/${list.length} done · ${right} right</span></span></div>` + list.map((q, i) => card(q, i + 1)).join("") + `<div class="row"><span></span><button class="link" id="reset">Reset answers</button></div>`;
 }
 
 function start() {
@@ -202,7 +219,7 @@ function quizView() {
 }
 
 function render() {
-  topicBar();
+  headerBars(true);
   document.querySelectorAll("#mode button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.m === mode)));
   if (mode === "practice") practice(); else quizView();
 }
@@ -211,12 +228,12 @@ document.addEventListener("click", (e) => {
   const t = e.target.closest("button"); if (!t) return;
   if (t.dataset.t != null) {
     const v = t.dataset.t;
-    if (v === "s") { tab = "s"; sq = $("#dq").value.trim(); } else tab = /^g/.test(v) ? v : Number(v);
-    try { localStorage.setItem("mcq-tab", tab === "s" ? "-1" : String(tab)); } catch (err) {}
-    quiz = null; closeDrawer(); render(); window.scrollTo(0, 0);
+    if (v === "s") { tab = "s"; sq = $("#dq").value.trim(); } else { tab = /^g/.test(v) ? v : Number(v); sec = secOf(); if (tab === -1) { $("#dq").value = ""; sec = -1; } }
+    try { localStorage.setItem("mcq-tab2", tab === "s" ? "-1" : String(tab)); } catch (err) {}
+    quiz = null; render(); window.scrollTo(0, 0);
   }
-  else if (t.id === "topics") openDrawer();
-  else if (t.id === "dclose") closeDrawer();
+  else if (t.dataset.go != null) go(Number(t.dataset.go));
+  else if (t.dataset.s != null) { const i = Number(t.dataset.s); $("#dq").value = ""; sec = sec === i ? -1 : i; headerBars(true); }
   else if (t.closest("#mode")) { mode = t.dataset.m; quiz = null; render(); }
   else if (t.id === "theme") {
     const el = document.documentElement, dark = getComputedStyle(el).colorScheme === "dark";
@@ -234,12 +251,12 @@ document.addEventListener("click", (e) => {
     $("#q" + q.id).outerHTML = card(q, pool().indexOf(q) + 1);
     const list = pool(), done = list.filter((x) => ans[x.id] != null).length, right = list.filter((x) => ans[x.id] === x.ans).length;
     document.querySelector(".bar .pill").textContent = done + "/" + list.length + " done · " + right + " right";
+    headerBars();
   }
   else if (t.classList.contains("opt") && quiz && !quiz.done) { quiz.picks[quiz.i] = Number(t.dataset.o); quizView(); }
 });
 
-$("#drawer").addEventListener("click", (e) => { if (e.target.id === "drawer") closeDrawer(); });
-$("#dq").addEventListener("input", drawerList);
+$("#dq").addEventListener("input", () => headerBars(false));
 $("#guide").addEventListener("click", (e) => { if (e.target.id === "guide") e.target.hidden = true; });
 
 function curCard() {
@@ -252,15 +269,14 @@ function pickCard() {
 }
 document.addEventListener("keydown", (e) => {
   if (e.target.matches && e.target.matches("input")) {
-    if (e.key === "Escape") { if ($("#dq").value) { $("#dq").value = ""; drawerList(); } else closeDrawer(); }
-    else if (e.key === "Enter") { const f = document.querySelector("#dlist .trow"); if (f) f.click(); }
+    if (e.key === "Escape") { if ($("#dq").value) { $("#dq").value = ""; headerBars(true); } else e.target.blur(); }
+    else if (e.key === "Enter") { const f = document.querySelector("#tbar .chip"); if (f) f.click(); }
     return;
   }
   if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
   const k = e.key.toLowerCase(), g = $("#guide");
-  if (k === "escape") { g.hidden = true; closeDrawer(); return; }
-  if (!$("#drawer").hidden) return;
-  if (k === "/") { e.preventDefault(); openDrawer(); return; }
+  if (k === "escape") { g.hidden = true; return; }
+  if (k === "/") { e.preventDefault(); $(".hdr").classList.remove("hide"); $("#dq").focus(); return; }
   if (k === "?") { g.hidden = !g.hidden; return; }
   if (!g.hidden) return;
   if (k === "enter" && e.target.closest && e.target.closest("button")) return;
@@ -269,7 +285,8 @@ document.addEventListener("keydown", (e) => {
     const i = "abcd".includes(k) ? "abcd".indexOf(k) : Number(k) - 1;
     const scope = quizOn ? document.querySelector("#view") : mode === "practice" ? pickCard() : null;
     const o = scope && scope.querySelectorAll(".opt")[i]; if (o) { o.click(); if (!quizOn) { const nx = [...document.querySelectorAll("#view .q:not(.done)")][0]; if (nx) nx.scrollIntoView({ block: "center", behavior: "smooth" }); } }
-  } else if (k === "enter" || k === "arrowright") { const n = $("#next"); if (n && !n.disabled) n.click(); }
+  } else if (k === "arrowleft" || (k === "arrowright" && !quizOn)) { if (!quizOn) go(k === "arrowright" ? 1 : -1); }
+  else if (k === "enter" || k === "arrowright") { const n = $("#next"); if (n && !n.disabled) n.click(); }
   else if (k === "p" || k === "q") document.querySelector('#mode [data-m="' + (k === "p" ? "practice" : "quiz") + '"]').click();
   else if (k === "t") $("#theme").click();
   else if (k === "j" && mode === "practice") {
