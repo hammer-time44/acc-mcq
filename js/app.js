@@ -264,6 +264,7 @@ function quizView() {
 }
 
 function render() {
+  { const v = $("#view"); v.classList.remove("enter"); void v.offsetWidth; v.classList.add("enter"); clearTimeout(render.t); render.t = setTimeout(() => v.classList.remove("enter"), 700); }
   headerBars(true); syncSearch();
   document.querySelectorAll("#mode button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.m === mode)));
   if (mode === "practice") practice(); else quizView();
@@ -288,7 +289,7 @@ document.addEventListener("click", (e) => {
   else if (t.id === "sbtn") { const b = $("#sbox"); if (b.classList.contains("open") && !$("#dq").value) b.classList.remove("open"); else { b.classList.add("open"); $("#dq").focus(); } }
   else if (t.id === "keys") $("#guide").hidden = false;
   else if (t.id === "gclose") $("#guide").hidden = true;
-  else if (t.id === "reset") { if (confirm("Clear your answers" + (tab < 0 ? "?" : " for " + title() + "?"))) { pool().forEach((q) => delete ans[q.id]); save(); render(); } }
+  else if (t.id === "reset") { if (t.dataset.arm) { pool().forEach((q) => delete ans[q.id]); save(); render(); } else { t.dataset.arm = "1"; t.textContent = "Tap again to clear " + (tab < 0 ? "all answers" : "this set"); } }
   else if (t.id === "retryall") { pool().forEach((q) => delete ans[q.id]); save(); render(); }
   else if (t.dataset.retry != null) { const q = ALL[t.dataset.retry - 1], el = $("#q" + q.id), pos = Number(el.querySelector(".qn").textContent) || 1; delete ans[q.id]; save(); el.outerHTML = card(q, pos); headerBars(); }
   else if (t.id === "start") start();
@@ -298,6 +299,7 @@ document.addEventListener("click", (e) => {
     const q = ALL[t.dataset.q - 1]; ans[q.id] = Number(t.dataset.o); save();
     const el = $("#q" + q.id), pos = Number(el.querySelector(".qn").textContent) || pool().indexOf(q) + 1;
     el.outerHTML = card(q, pos);
+    { const nq = $("#q" + q.id); nq.classList.add("fresh"); setTimeout(() => nq.classList.remove("fresh"), 400); }
     document.querySelector(".bar .pill").textContent = pillText(pool());
     headerBars();
   }
