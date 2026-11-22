@@ -28,7 +28,7 @@ const T = [
     ["Which technique allows efficient calculation of substring weights using precomputed cumulative sums?", ["Prefix Sum", "Quick Sort", "Stack", "Tree Traversal"], 0]
   ]},
   { n: "Move Hyphen to Beginning", q: [
-    ["What is the output for the input \"a-b-c-d\"?", ["abcd----", "----abcd", "a--bcd", "dcba----"], 1],
+    ["What is the output for the input \"a-b-c-d\"?", ["abcd---", "---abcd", "a--bcd", "dcba---"], 1],
     ["Which approach can solve this problem in O(n) time?", ["Bubble Sort", "Count hyphens and construct the output", "Binary Search", "Quick Sort"], 1],
     ["What is the output for \"hello-world\"?", ["hello-world", "-helloworld", "helloworld", "worldhello"], 1],
     ["What is the time complexity of traversing a string of length n once?", ["O(1)", "O(n)", "O(n²)", "O(log n)"], 1],

@@ -306,8 +306,8 @@ const EXTRA = [
     [
      "&",
      "&&",
-     "OR operator (",
-     ")"
+     "||",
+     "!"
     ],
     1
    ],
@@ -600,9 +600,9 @@ const EXTRA = [
    [
     "What will be the output? int i=5; while(i>0){ System.out.print(i+\" \"); i-=2; }",
     [
-     "2001-05-03 00:00:00",
+     "5 3 1",
      "5 4 3 2 1",
-     "2026-05-02 00:00:00",
+     "5 2",
      "Infinite Loop"
     ],
     0
@@ -1502,7 +1502,7 @@ const EXTRA = [
     [
      "1 to 100",
      "1 to 1000",
-     "Large intervals such as 1012 to 1012 + 106",
+     "Large intervals such as 10¹² to 10¹² + 10⁶",
      "1 to 50"
     ],
     2
@@ -1922,10 +1922,10 @@ const EXTRA = [
    [
     "Which digits are valid as the middle digit of an odd-length Strobogrammatic Number?",
     [
-     "2026-02-05 00:00:00",
-     "2026-06-09 00:00:00",
-     "2000-01-08 00:00:00",
-     "2026-03-07 00:00:00"
+     "2, 5",
+     "6, 9",
+     "0, 1, 8",
+     "3, 7"
     ],
     2
    ],
@@ -2025,9 +2025,10 @@ const EXTRA = [
      "609",
      "906",
      "818",
-     "689"
+     "698"
     ],
-    3
+    3,
+    "698 is not Strobogrammatic (rotating it gives 869). The source options 609, 906, 818 and 689 are all Strobogrammatic, so option D was changed to 698."
    ],
    [
     "A number with an odd number of digits can be Strobogrammatic only if its middle digit is:",
@@ -2299,7 +2300,8 @@ const EXTRA = [
      "Undefined",
      "Random"
     ],
-    0
+    1,
+    "An even number of toggles returns the switch to its starting state, so ON stays ON. The source key listed OFF."
    ],
    [
     "Which mathematical property determines the final state of a switch after multiple toggles?",
@@ -2573,7 +2575,7 @@ const EXTRA = [
      "<<",
      ">>",
      "&",
-     "`"
+     "|"
     ],
     1
    ],
@@ -2643,7 +2645,7 @@ const EXTRA = [
      "n << 1",
      "n >> 1",
      "n & 1",
-     "`n"
+     "n | 1"
     ],
     1
    ],
@@ -3312,13 +3314,12 @@ const EXTRA = [
    [
     "Which input pair gives GCD 9?",
     [
-     "27,36",
+     "24,36",
      "18,27",
      "20,27",
      "45,64"
     ],
-    1,
-    "Both 27, 36 and 18, 27 have GCD 9. The PDF key lists B."
+    1
    ],
    [
     "For gcd(101,10), the first remainder is:",
@@ -3530,13 +3531,13 @@ const EXTRA = [
    [
     "Karatsuba's recurrence is approximately:",
     [
-     "T(n)=2T(n/2)+O(n)",
+     "T(n)=3T(n/2)+O(n)",
      "T(n)=4T(n/2)+O(n)",
      "T(n)=T(n-1)+O(1)",
      "T(n)=nT(n)"
     ],
     0,
-    "Strictly, Karatsuba is T(n) = 3T(n/2) + O(n). None of the listed options says so; the PDF key lists A."
+    "Karatsuba makes 3 recursive multiplications of half size. The source option A said 2T(n/2), which is wrong, so it was changed to 3T(n/2)."
    ],
    [
     "The asymptotic time complexity of Karatsuba multiplication is:",
@@ -3789,11 +3790,11 @@ const EXTRA = [
     [
      "4",
      "5",
-     "6",
+     "7",
      "8"
     ],
     2,
-    "Flipping the zero at index 5 or 10 gives a run of 7, which is not among the options. The sheet key lists C (6)."
+    "Flipping the zero at index 5 or 10 gives a run of 7. The source options did not include 7, so option C was changed from 6 to 7."
    ],
    [
     "Generalizes to k flips by adjusting",
@@ -4823,7 +4824,8 @@ const EXTRA = [
      "-48",
      "8"
     ],
-    1
+    0,
+    "The best subarray is [2, 3] = 6, since including −2 makes the product negative. The source key listed B (24), which is wrong."
    ],
    [
     "A zero in the array generally:",
@@ -5667,12 +5669,13 @@ const EXTRA = [
    [
     "For [16,17,4,3,5,2], the leaders are",
     [
-     "16,17,5,2",
+     "17, 5, 2",
      "16,17,4,3",
      "17 only",
      "2 only"
     ],
-    0
+    0,
+    "16 is not a leader because 17 lies to its right. The source option A listed 16, 17, 5, 2, so it was changed to 17, 5, 2."
    ],
    [
     "Strictly increasing sorted array, number of leaders",
@@ -6299,7 +6302,7 @@ const EXTRA = [
    [
     "For \"aabb\", lexicographically smallest palindrome",
     [
-     "\"bttb\"",
+     "baba",
      "\"abba\"",
      "\"baab\"",
      "\"bbaa\""
