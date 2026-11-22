@@ -104,6 +104,7 @@ if (typeof EXTRA !== "undefined") T.push(...EXTRA.map((t) => ({ ...t, g: t.g - 1
 const COLORS = T.map(() => "var(--accent)");
 const ALL = [];
 T.forEach((t, ti) => t.q.forEach((x) => ALL.push({ id: ALL.length + 1, ti, text: x[0], opts: x[1], ans: x[2], note: x[3] || "" })));
+if (typeof MORE !== "undefined") MORE.forEach((m) => { const ti = T.findIndex((t) => t.n === m.n); if (ti >= 0) m.q.forEach((x) => ALL.push({ id: ALL.length + 1, ti, text: x[0], opts: x[1], ans: x[2], note: x[3] || "" })); });
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));

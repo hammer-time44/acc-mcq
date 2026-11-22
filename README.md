@@ -22,7 +22,7 @@ Push to Vercel (or any static host). `vercel.json` is included.
 
 ## Features
 
-- 709 questions across CAT-1, CAT-2 and FAT, grouped by topic
+- 940 questions across CAT-1, CAT-2 and FAT, grouped by topic
 - Practice mode (instant feedback) and Quiz mode (score at the end)
 - Search, Mistakes tab and per-topic progress
 - Light (white) and dark (black) themes, saved in the browser
@@ -35,6 +35,8 @@ Edit `js/data.js`. Each topic is:
     { n: "Topic name", g: 1, q: [ ["Question", ["A", "B", "C", "D"], correctIndex, "optional note"] ] }
 
 `g` is the group index (0 CAT-1, 1 CAT-2, 2 FAT). `correctIndex` is 0 to 3.
+
+To add questions to an existing topic without disturbing saved progress, append them to `MORE` in `js/data.js` as `{ n: "Existing topic name", q: [...] }`.
 
 ## Notes
 

@@ -6549,3 +6549,309 @@ const EXTRA = [
   ]
  }
 ];
+
+// Extra questions from more_questions.pdf, merged into existing FAT topics by name (duplicates removed; corrected keys carry a note).
+// Loaded in app.js after the originals so existing question ids (and saved progress) do not change.
+const MORE = [
+ {
+  "n": "Natural Sort Order",
+  "q": [
+   ["Consider the filenames file1, file10, file2, and file20. What is their order after applying natural sorting in ascending order?", ["file1, file10, file2, file20", "file1, file2, file10, file20", "file10, file1, file20, file2", "file2, file1, file10, file20"], 1],
+   ["What is the primary difference between lexicographical sorting and natural sorting when comparing item12 and item3?", ["Both always produce the same order", "Lexicographical sorting compares numeric portions as numbers", "Natural sorting compares numeric portions by numerical value", "Natural sorting ignores numeric portions"], 2],
+   ["Given the strings A5, A12, A3, and A20, which string appears third after natural ascending sorting?", ["A3", "A5", "A12", "A20"], 2],
+   ["A system sorts the filenames log1, log11, and log2 using ordinary lexicographical order. What is the resulting order?", ["log1, log2, log11", "log2, log1, log11", "log11, log1, log2", "log1, log11, log2"], 3],
+   ["Which approach is most suitable for implementing natural sorting of alphanumeric strings?", ["Compare every character using ASCII values only", "Split strings into numeric and non-numeric portions and compare corresponding portions", "Reverse each string before comparison", "Sort strings according to their lengths only"], 1],
+   ["Consider test009, test10, and test2. If leading zeros are ignored when comparing numeric portions, what is the natural ascending order?", ["test009, test2, test10", "test2, test009, test10", "test10, test2, test009", "test2, test10, test009"], 1],
+   ["What should a natural sorting comparator do when both corresponding portions are numeric?", ["Compare their ASCII representations", "Compare their numerical values", "Compare the number of characters only", "Ignore both numeric portions"], 1],
+   ["Given img1, img2, img10, and img100, how many elements appear before img10 in natural ascending order?", ["0", "1", "2", "3"], 2],
+   ["Which of the following sequences is correctly sorted using natural ascending order?", ["v1, v10, v11, v2", "v10, v11, v1, v2", "v1, v2, v10, v11", "v2, v1, v11, v10"], 2],
+   ["A natural sorting comparator compares data25 and data7. Which comparison determines the result?", ["ASCII comparison of 2 and 7", "Numerical comparison of 25 and 7", "Length comparison of the complete strings", "Reverse comparison of the strings"], 1],
+   ["If a natural sorting comparator returns zero for two different strings, what does it indicate?", ["The strings must be identical", "The first string is smaller", "The second string is smaller", "The comparator considers them equivalent"], 3],
+   ["Which data structure is commonly used when storing strings that need to be sorted using a custom natural ordering?", ["Stack", "PriorityQueue with a natural-order comparator", "Queue without a comparator", "HashSet only"], 1],
+   ["Consider chapter2, chapter02, and chapter10. If leading zeros are ignored and equal numeric values are treated as equivalent, which two strings compare as equivalent?", ["chapter2 and chapter10", "chapter02 and chapter10", "chapter2 and chapter02", "All three"], 2],
+   ["What is the time complexity of comparison-based sorting of N strings when each comparison takes O(L), where L is the maximum string length?", ["O(N)", "O(N log N)", "O(N log N × L)", "O(N² × L²)"], 2],
+   ["A natural sorting comparator processes a12b4 and a12b15. At which portion does the first difference occur?", ["First alphabetic portion", "First numeric portion", "Second alphabetic portion", "Second numeric portion"], 3],
+   ["Which issue can occur if a custom natural sorting comparator does not handle very large numeric portions safely?", ["Stack overflow in every comparison", "Integer overflow during numeric conversion", "Automatic reversal of strings", "Duplicate removal"], 1],
+   ["A directory contains folder1, folder3, folder12, and folder4. Which folder appears immediately before folder12 in natural ascending order?", ["folder1", "folder3", "folder4", "folder12"], 2],
+   ["If a sorting algorithm uses a stable sorting method with a natural comparator, what happens to elements considered equal by that comparator?", ["Their original relative order is preserved", "Their original order is always reversed", "They are automatically removed", "They are moved to the beginning"], 0],
+   ["Which input is most likely to demonstrate a difference between natural sorting and ordinary lexicographical sorting?", ["apple, banana, mango", "cat, dog, elephant", "file1, file2, file10", "red, green, blue"], 2],
+   ["When implementing natural sorting, why should consecutive digits be processed as one numeric segment rather than individually?", ["To reduce the number of strings", "To compare complete numerical values correctly", "To eliminate alphabetic characters", "To make every comparison constant time"], 1]
+  ]
+ },
+ {
+  "n": "Quick Sort",
+  "q": [
+   ["Which sorting algorithm selects a pivot element and partitions the array into elements smaller and larger than the pivot?", ["Selection Sort", "Insertion Sort", "Quick Sort", "Bubble Sort"], 2],
+   ["In Quick Sort, what happens after the partition operation is completed?", ["The entire array becomes sorted immediately", "The pivot reaches its correct sorted position", "The array is reversed", "The smallest element is removed"], 1],
+   ["Consider the array [8, 4, 7, 3, 10]. If the last element is selected as the pivot using Lomuto partitioning, which elements appear before the pivot after partitioning?", ["8, 4, 7, 3", "10, 8, 4, 7", "8, 10, 4, 7", "3, 10, 8, 4"], 0],
+   ["Which statement correctly describes the space complexity of recursive Quick Sort in the average case?", ["O(1)", "O(log N)", "O(N²)", "O(N log N)"], 1],
+   ["Which statement about standard Quick Sort is correct?", ["It is always stable", "It generally sorts in place but is not stable", "It always requires O(N) auxiliary array space", "It never uses recursion"], 1],
+   ["An array is already sorted in ascending order. Quick Sort always selects the last element as its pivot. What is its worst-case time complexity?", ["O(N)", "O(log N)", "O(N log N)", "O(N²)"], 3],
+   ["Which algorithm generally performs better for large randomly ordered arrays when implemented with a good pivot strategy?", ["Selection Sort", "Quick Sort", "Both always have identical performance", "Neither can handle large arrays"], 1],
+   ["Consider [5, 2, 8, 1, 9]. If the first element is chosen as the pivot in Quick Sort, which element is the pivot?", ["1", "2", "5", "9"], 2],
+   ["What is the best-case time complexity of Quick Sort when partitioning divides the array into two nearly equal halves at every level?", ["O(N)", "O(N log N)", "O(N²)", "O(log N)"], 1]
+  ]
+ },
+ {
+  "n": "Selection Sort",
+  "q": [
+   ["How many comparisons are performed by standard Selection Sort for an array containing N elements?", ["N log N", "N(N−1)/2", "N−1", "N² log N"], 1],
+   ["Consider the array [29, 10, 14, 37, 13]. What will the array look like after the first pass of Selection Sort in ascending order?", ["[10, 29, 14, 37, 13]", "[13, 10, 14, 37, 29]", "[29, 10, 13, 37, 14]", "[10, 14, 29, 37, 13]"], 0, "The PDF key lists B, but the first pass swaps the minimum (10) into position 0, giving [10, 29, 14, 37, 13], so A is correct."],
+   ["Which of the following is a major disadvantage of standard Selection Sort?", ["It requires additional O(N) memory", "It always performs O(N²) comparisons", "It cannot sort negative numbers", "It requires a pivot element"], 1],
+   ["In Selection Sort, how many elements are in the sorted portion after completing the third pass on an array of 8 elements?", ["2", "3", "4", "5"], 1],
+   ["Which sorting algorithm performs the same number of comparisons regardless of whether the input array is already sorted or randomly arranged?", ["Quick Sort", "Selection Sort", "Merge Sort", "Insertion Sort"], 1],
+   ["Why is Selection Sort considered an in-place sorting algorithm?", ["It uses a separate array of size N", "It rearranges elements within the original array using constant auxiliary space", "It stores all elements in a heap", "It creates a recursive copy of the array"], 1],
+   ["A developer needs a sorting algorithm that performs very few swaps, even though it may perform many comparisons. Which algorithm is more suitable?", ["Quick Sort", "Selection Sort", "Bubble Sort", "Merge Sort"], 1]
+  ]
+ },
+ {
+  "n": "Weighted Substring",
+  "q": [
+   ["A string P = \"abca\" has weight 1 assigned to every lowercase letter and maximum allowed weight K = 2. How many distinct non-empty substrings have total weight at most 2?", ["4", "5", "6", "7"], 2],
+   ["In the Weighted Substring problem, what does the 26-character weight string represent?", ["Frequency of each character", "Weight assigned to each lowercase alphabet character", "Position of each character", "Number of unique substrings"], 1],
+   ["Given P = \"abc\", with weights a = 1, b = 2, c = 3 and K = 3, how many distinct non-empty substrings satisfy the weight condition?", ["3", "4", "5", "6"], 1],
+   ["If the weight of character a is zero, how does it affect the weight of a substring containing only a characters?", ["Its weight increases by one", "Its weight becomes equal to K", "Its total weight remains zero", "It becomes invalid"], 2],
+   ["Why must duplicate substrings be counted only once in the Weighted Substring problem?", ["Because only distinct substring values are required", "Because repeated characters are invalid", "Because only substrings of length one are allowed", "Because duplicate substrings always exceed K"], 0],
+   ["Which data structure is particularly suitable for counting distinct substrings efficiently while extending substrings from each starting position?", ["Stack", "Queue", "Trie", "Binary Search Tree"], 2],
+   ["A substring has characters a, b, and c with weights 2, 3, and 4 respectively. If K = 8, what is the result?", ["Valid because its weight is 8", "Invalid because its weight is 9", "Valid because its length is 3", "Invalid because it contains three characters"], 1],
+   ["When extending a substring by one character, how should its total weight be updated?", ["Recalculate the entire substring weight every time", "Add only the newly included character’s weight", "Subtract the previous character’s weight", "Multiply the previous weight by the new character’s weight"], 1],
+   ["For a string of length N, what is the maximum possible number of distinct non-empty substrings?", ["N", "N(N+1)/2", "N²", "2ᴺ"], 1],
+   ["Which condition allows an algorithm to stop extending a substring from a particular starting position when all character weights are non-negative?", ["Current weight becomes zero", "Current weight exceeds K", "Substring length becomes two", "A duplicate character is found"], 1],
+   ["A string contains only the character a repeated N times, and the weight of a is zero. How many distinct non-empty substrings exist?", ["1", "N", "N−1", "N²"], 1, "The PDF key lists A, but a string of N identical letters has exactly N distinct substrings (a, aa, … up to length N), so B is correct."],
+   ["Which technique avoids storing complete substring strings repeatedly while counting distinct substrings?", ["Linear search", "Trie-based insertion", "Bubble Sort", "Binary Search"], 1],
+   ["What is the worst-case time complexity of generating substrings by extending from every starting position and inserting them into a Trie?", ["O(N)", "O(N log N)", "O(N²)", "O(N³)"], 2],
+   ["Why can a HashSet-based solution require more memory than a Trie-based solution for this problem?", ["HashSet cannot store strings", "HashSet may store complete substring copies, causing repeated character storage", "Trie stores every substring as a separate string", "HashSet always uses constant memory"], 1],
+   ["Given P = \"aaa\", with weight of a equal to 1 and K = 2, how many distinct valid non-empty substrings exist?", ["1", "2", "3", "4"], 1],
+   ["In a Trie-based solution, what does a newly created Trie node represent when inserting substrings?", ["A new distinct substring prefix", "A duplicate substring", "The total weight of the original string", "The number of starting positions"], 0],
+   ["Suppose P = \"abc\" and the character weights are a = 0, b = 0, c = 2, with K = 1. How many distinct non-empty substrings are valid?", ["2", "3", "4", "5"], 1],
+   ["What is the main disadvantage of repeatedly calculating the weight of every generated substring from scratch?", ["It produces incorrect character weights", "It can increase the time complexity due to repeated calculations", "It removes duplicate substrings automatically", "It requires no additional memory"], 1],
+   ["A string has length N and all possible substrings are generated and stored as complete strings in a HashSet. What can be the worst-case total character storage required?", ["O(N)", "O(N log N)", "O(N²)", "O(N³)"], 3]
+  ]
+ },
+ {
+  "n": "Move Hyphen to Beginning",
+  "q": [
+   ["Given the string \"Move-Hyphen-To-Beginning\", what will be the output after moving all hyphens to the beginning while maintaining the relative order of other characters?", ["---MoveHyphenToBeginning", "MoveHyphenToBeginning-", "--MoveHyphenToBeginning", "Move-HyphenToBeginning"], 0, "The input has 3 hyphens, so the output starts with three; the PDF's option A showed only one and was corrected."],
+   ["Which approach provides an efficient solution for moving all hyphens to the beginning of a string while preserving the order of other characters?", ["Sort all characters", "Count hyphens and append non-hyphen characters", "Reverse the complete string", "Use nested loops to swap every character"], 1],
+   ["What should be the output when the input string contains no hyphens, such as \"programming\"?", ["-programming", "programming-", "Empty string", "programming"], 3],
+   ["Given the input \"---Java\", what will be the output after moving all hyphens to the beginning?", ["Java---", "---Java", "--Java-", "Java"], 1],
+   ["What is the output when the input is \"A-B--C\" and all hyphens must be moved to the beginning?", ["---ABC", "ABC--", "-A-BC", "--A-BC"], 0, "The input has 3 hyphens, so the output starts with three; the PDF's option A showed only two and was corrected."],
+   ["An algorithm first counts the number of hyphens and then copies all non-hyphen characters into a new character array. What is its overall time complexity?", ["O(N²)", "O(N log N)", "O(N)", "O(1)"], 2],
+   ["If the input consists entirely of hyphens, such as \"-----\", what should the output be?", ["Empty string", "-----", "-", "----- followed by null"], 1],
+   ["Which operation is required to preserve the original relative order of non-hyphen characters?", ["Sort the remaining characters", "Reverse the remaining characters", "Append characters in their original scanning order", "Swap adjacent non-hyphen characters"], 2],
+   ["Given \"ab-cd-ef\", what is the correct output after moving hyphens to the beginning?", ["abcdef--", "--abcdef", "-ab-cdef", "--ab-cdef"], 1],
+   ["What is the auxiliary space complexity of a solution that constructs a separate output string using a StringBuilder?", ["O(1)", "O(log N)", "O(N)", "O(N²)"], 2],
+   ["Which input represents the edge case where the algorithm must return the original string without modification?", ["\"---\"", "\"A-B\"", "\"HELLO\"", "\"--A\""], 2],
+   ["A developer uses repeated string concatenation inside a loop to move hyphens. Why can this approach become inefficient in Java?", ["Strings are mutable", "Each concatenation may create a new String object and copy existing characters", "String concatenation always takes O(1)", "Hyphens cannot be concatenated"], 1],
+   ["Given \"x-y-z-\", how many characters will be present before the first non-hyphen character in the final output?", ["1", "2", "3", "4"], 2],
+   ["Which condition correctly identifies a hyphen character in a Java string while scanning it character by character?", ["ch == '-'", "ch == '_'", "ch == ' '", "ch == '/'"], 0],
+   ["If an input string has length N and contains K hyphens, how many non-hyphen characters will appear after the hyphens in the output?", ["K", "N", "N−K", "N+K"], 2],
+   ["Which technique can move hyphens to the beginning in place using a character array and two-pointer traversal?", ["Use two pointers to place non-hyphen characters from the end", "Sort the character array", "Use binary search", "Apply merge sort"], 0],
+   ["A string has 100 characters, including 25 hyphens. After moving all hyphens to the beginning, how many characters remain after the hyphen section?", ["25", "50", "75", "100"], 2]
+  ]
+ },
+ {
+  "n": "Manacher’s Algorithm",
+  "q": [
+   ["Consider the input string \"abba\". What is the length of its longest palindromic substring?", ["2", "3", "4", "5"], 2],
+   ["What is the purpose of maintaining the current center C and right boundary R in Manacher’s Algorithm?", ["To track the current palindrome with the rightmost boundary", "To count distinct characters", "To sort the transformed string", "To find the smallest character"], 0],
+   ["If a position i lies inside the current right boundary R, which position is used to initialize its palindrome radius using symmetry?", ["R + i", "2*C - i", "i - C", "C + R"], 1],
+   ["Given the string \"babad\", what is the length of the longest palindromic substring?", ["2", "3", "4", "5"], 1],
+   ["Which of the following strings has an even-length longest palindromic substring?", ["\"abc\"", "\"racecar\"", "\"cbbd\"", "\"xyz\""], 2],
+   ["Why does Manacher’s Algorithm achieve O(N) time complexity despite expanding palindromes around multiple centers?", ["Every character is processed exactly once", "The right boundary of the known palindrome only moves forward, limiting repeated expansion", "It uses binary search for every character", "It ignores even-length palindromes"], 1],
+   ["What is the time complexity of the straightforward center-expansion approach for finding the longest palindromic substring in the worst case?", ["O(N)", "O(N log N)", "O(N²)", "O(log N)"], 2],
+   ["What is the output length of the longest palindromic substring for the input \"aaaaa\"?", ["1", "2", "4", "5"], 3],
+   ["If the input string contains only one character, what is the length of its longest palindromic substring?", ["0", "1", "2", "Depends on the character"], 1],
+   ["Which statement correctly describes a palindrome?", ["A string containing only unique characters", "A string that reads the same forward and backward", "A string sorted in ascending order", "A string containing only vowels"], 1],
+   ["In the transformed string #a#b#b#a#, what is the palindrome centered at the middle separator?", ["#a#", "#b#", "#a#b#b#a#", "#b#b#"], 2],
+   ["What is the auxiliary space complexity of the standard Manacher’s Algorithm implementation using a transformed string and radius array?", ["O(1)", "O(log N)", "O(N)", "O(N²)"], 2],
+   ["Which of the following is a valid longest palindromic substring of \"forgeeksskeegfor\"?", ["\"geeksskeeg\"", "\"forgeek\"", "\"sskeegfor\"", "\"geekss\""], 0],
+   ["What is the main advantage of Manacher’s Algorithm over checking every possible substring for palindromicity?", ["It requires no input string", "It reduces worst-case time complexity from O(N³) for brute-force checking to O(N)", "It sorts the string automatically", "It uses no auxiliary space"], 1],
+   ["If two longest palindromic substrings have the same maximum length, what does the algorithm generally need to do to return a valid answer?", ["Return either one of the longest palindromes", "Return an empty string", "Return the entire input string", "Return the shortest palindrome"], 0]
+  ]
+ },
+ {
+  "n": "Sorted Unique Permutation",
+  "q": [
+   ["What is the main objective of generating sorted unique permutations of a string?", ["Generate all permutations in random order", "Generate all distinct permutations in lexicographical order", "Generate only palindromic permutations", "Sort the input without changing its characters"], 1],
+   ["How many distinct permutations can be formed from the string \"ABC\"?", ["3", "4", "6", "9"], 2],
+   ["Before generating permutations in lexicographical order, why is the input string commonly sorted?", ["To remove all repeated characters", "To establish the initial lexicographical order", "To reduce the number of characters", "To reverse the string"], 1],
+   ["Given the string \"ABC\", which permutation appears first in lexicographical order?", ["BAC", "ACB", "ABC", "CBA"], 2],
+   ["Given the string \"ABC\", which permutation appears last in lexicographical order?", ["ABC", "BCA", "CAB", "CBA"], 3],
+   ["How many distinct permutations can be generated from \"AABC\"?", ["6", "8", "12", "24"], 2],
+   ["Which condition helps prevent duplicate permutations when the input characters are sorted before backtracking?", ["Skip a character if it equals the previous character and the previous character has not been used in the current recursion path", "Skip every even-indexed character", "Always choose the largest character first", "Reverse the input at every recursive call"], 0],
+   ["What is the number of distinct permutations of the string \"AAA\"?", ["1", "3", "6", "9"], 0],
+   ["What is the time complexity of generating all distinct permutations when there are D distinct permutations and each result contains N characters?", ["O(N)", "O(N log N)", "O(D × N)", "O(N²)"], 2],
+   ["What is the number of distinct permutations of the string \"AABB\"?", ["4", "6", "12", "24"], 1],
+   ["Which data structure is commonly used to track whether a character has already been selected during permutation backtracking?", ["Boolean visited array", "Queue", "PriorityQueue", "Graph adjacency list"], 0],
+   ["Given the string \"AB\", what is the second permutation in lexicographical order?", ["AB", "BA", "AA", "BB"], 1],
+   ["What is the main reason for sorting characters before applying the next-permutation technique?", ["To ensure generated permutations follow lexicographical order", "To remove duplicate characters", "To reduce recursion depth", "To make all characters identical"], 0],
+   ["Which Java method can be used to sort a character array before generating permutations?", ["Arrays.sort(charArray)", "Collections.reverse (charArray)", "String.sort()", "Scanner.sort()"], 0],
+   ["If a string contains N distinct characters, how many total permutations can be generated?", ["N²", "2ᴺ", "N!", "N log N"], 2],
+   ["What is the next lexicographical permutation of \"123\"?", ["132", "213", "231", "321"], 0],
+   ["Which approach is more suitable when all unique permutations must be generated and printed in lexicographical order?", ["Generate permutations randomly and sort them afterward", "Sort the input and use backtracking with duplicate skipping", "Reverse the input repeatedly", "Use only a HashMap of character frequencies"], 1],
+   ["A string contains 5 characters, where two characters are identical and the remaining three are distinct. How many distinct permutations can be generated?", ["30", "60", "120", "24"], 1]
+  ]
+ },
+ {
+  "n": "Maneuvering (Grid Paths)",
+  "q": [
+   ["A person moves from the top-left corner to the bottom-right corner of a grid. They can move only right or down. Which mathematical concept is commonly used to calculate the number of shortest paths?", ["Permutation", "Combination", "Probability", "Arithmetic progression"], 1],
+   ["A robot moves from (0,0) to (2,3) using only right and down movements. How many shortest paths are possible?", ["5", "10", "15", "20"], 1],
+   ["Why can the number of shortest paths in a rectangular grid be calculated using combinations?", ["Because all movements are identical", "Because the order of right and down moves determines the path", "Because only one direction is allowed", "Because movements are independent"], 1],
+   ["A person must move 4 steps right and 3 steps down to reach a destination. How many different shortest paths are possible?", ["21", "28", "35", "42"], 2],
+   ["A robot can move only right or down. One cell in its grid is blocked. Which approach is most suitable for calculating the number of valid paths when several cells may be blocked?", ["Binary search", "Dynamic programming", "Linear search", "Selection sort"], 1],
+   ["A person moves from (0,0) to (3,3) using only right and up movements. The person must never move above the diagonal boundary represented by the condition that the number of up moves cannot exceed the number of right moves at any point. How many valid paths are possible?", ["4", "5", "6", "8"], 1],
+   ["Which formula gives the number of shortest paths from (0,0) to (m,n) when only right and down movements are allowed?", ["(m+n)!", "(m+n)! / (m! × n!)", "m! / n!", "m × n"], 1],
+   ["A robot travels from (0,0) to (3,3). It must pass through (1,1). Only right and down movements are allowed. How many paths are possible?", ["2", "12", "6", "8"], 1, "Paths (0,0)→(3,3) through (1,1): 2 × C(4,2) = 12. The PDF's options did not contain 12, so option B was corrected."],
+   ["A grid has 3 rows and 3 columns of cells. A person starts at the top-left intersection and reaches the bottom-right intersection, moving only right or down. How many shortest paths are possible?", ["10", "15", "20", "30"], 2],
+   ["In a grid path problem, what happens to the total number of paths when a blocked cell is introduced?", ["All paths become invalid", "Only paths passing through the blocked cell are removed", "The number of paths always doubles", "The number of paths remains unchanged"], 1],
+   ["A robot must make 5 right moves and 2 down moves. If the first move must be right, how many shortest paths are possible?", ["10", "15", "21", "35"], 1],
+   ["A person must make 3 right moves and 3 up moves. If no two up moves can occur consecutively, how many different movement sequences are possible?", ["2", "3", "4", "6"], 2],
+   ["Which approach is generally used to solve grid path problems with obstacles efficiently?", ["Dynamic programming with a path-count table", "Sorting all possible paths", "Greedy selection of the longest path", "Binary search on grid positions"], 0],
+   ["A robot travels from (0,0) to (4,3) using only right and down moves. How many shortest paths are possible?", ["21", "28", "35", "42"], 2],
+   ["A person travels from (0,0) to (3,2) using right, down, and diagonal down-right moves. If exactly one diagonal move must be used, how many paths are possible?", ["6", "8", "10", "12"], 3],
+   ["In a grid with only right and down movements, the number of paths to a cell is calculated by adding the number of paths from which neighboring cells?", ["Left and upper cells", "Right and lower cells", "Diagonal cells only", "All four neighboring cells"], 0],
+   ["A robot moves from (0,0) to (4,4) using only right and down movements. How many shortest paths are possible if the final move must be down?", ["35", "56", "70", "126"], 0, "The PDF key lists B (56), but with the last move fixed as down, the path must first reach the cell just before it: C(7,3) = 35, so A is correct."],
+   ["A person must move 4 steps right and 3 steps up. If the first two moves must be in different directions, how many movement sequences are possible?", ["20", "25", "30", "35"], 0, "The PDF key lists C (30), but the first two moves are RU or UR, each leaving 3 R and 2 U: 2 × C(5,2) = 20, so A is correct."],
+   ["A robot moves from (0,0) to (4,4) using only right and down moves. How many paths have exactly two right moves before the first down move?", ["10", "15", "20", "25"], 0]
+  ]
+ },
+ {
+  "n": "Combination",
+  "q": [
+   ["Which statement correctly distinguishes combination from permutation?", ["Combination considers order, but permutation does not", "Both always consider order", "Combination does not consider order, but permutation does", "Neither considers order"], 2],
+   ["A team of 3 students must be selected from 8 students. How many different teams can be formed?", ["24", "48", "56", "64"], 2],
+   ["Which formula is used to select r objects from n distinct objects when order does not matter?", ["nʳ", "n! / (n − r)!", "n! / (r! × (n − r)!)", "n! × r!"], 2],
+   ["A committee of 4 members is selected from 10 people. How many different committees are possible?", ["120", "180", "210", "240"], 2],
+   ["From 7 men and 5 women, a committee of 4 people must be formed with exactly 2 men and 2 women. How many committees are possible?", ["150", "200", "210", "250"], 2],
+   ["A student must answer 5 questions out of 8 questions. If the order of answering does not matter, how many selections are possible?", ["40", "48", "56", "64"], 2],
+   ["A group of 5 people is selected from 9 people. If one particular person must always be included, how many groups are possible?", ["56", "70", "84", "126"], 1],
+   ["A committee of 3 people is selected from 6 men and 4 women. If at least one woman must be included, how many committees are possible?", ["80", "90", "100", "110"], 2],
+   ["Which identity is correct for combinations?", ["nCr = nPr", "nCr = nC(n−r)", "nCr = rCn", "nCr = n!"], 1],
+   ["A box contains 8 different books. In how many ways can 3 books be selected if two particular books cannot be selected together?", ["36", "50", "48", "56"], 1, "C(8,3) − C(6,1) = 56 − 6 = 50. The PDF's options did not contain 50, so option B was corrected."],
+   ["From 10 people, a group of 4 is selected. Two particular people must not be included together. How many groups are possible?", ["168", "182", "196", "210"], 1],
+   ["A student has 7 different books and must select 4. If two particular books must both be selected, how many selections are possible?", ["5", "10", "15", "20"], 1],
+   ["A committee of 5 people is formed from 8 men and 7 women. If exactly 3 men must be selected, how many committees are possible?", ["840", "980", "1176", "1400"], 2],
+   ["How many diagonals can be drawn in a polygon with 12 vertices by joining pairs of non-adjacent vertices?", ["48", "50", "54", "60"], 2],
+   ["A group of 6 people is selected from 10 people. If two particular people must both be included, how many groups are possible?", ["56", "70", "84", "112"], 1],
+   ["From 9 different fruits, a person selects 4 fruits. If at least one of two particular fruits must be selected, how many selections are possible?", ["70", "84", "91", "98"], 2],
+   ["A class has 6 boys and 5 girls. A team of 4 students must be selected with at least 2 boys. How many teams are possible?", ["180", "200", "265", "225"], 2, "150 (2B+2G) + 100 (3B+1G) + 15 (4B) = 265. The PDF's options did not contain 265, so option C was corrected."],
+   ["In how many ways can 5 cards be selected from a standard deck of 52 cards when the order of selection does not matter?", ["2,598,960", "2,500,000", "1,000,000", "3,000,000"], 0],
+   ["A committee of 3 is selected from 8 people. If two particular people cannot be selected together, how many committees are possible?", ["46", "48", "50", "52"], 2, "The PDF key lists B (48), but C(8,3) − C(6,1) = 56 − 6 = 50, so C is correct."],
+   ["From 6 men and 5 women, a team of 5 people is selected. If the team must contain more women than men, how many teams are possible?", ["126", "181", "136", "141"], 1, "150 (3W+2M) + 30 (4W+1M) + 1 (5W) = 181. The PDF's options did not contain 181, so option B was corrected."]
+  ]
+ },
+ {
+  "n": "Josephus Trap",
+  "q": [
+   ["The Josephus problem involves people standing in a circle and eliminating every Kth person until only one remains. What determines the elimination order?", ["Total number of people only", "Elimination interval K and starting position", "Direction of the circle only", "Number of rounds only"], 1],
+   ["There are 5 people standing in a circle, numbered 1 to 5. Starting at position 1, every second person is eliminated. Counting resumes from the next person. Which position survives?", ["1", "2", "3", "4"], 2],
+   ["In the Josephus problem, what does the recurrence J(n) = (J(n−1) + K) mod n calculate when positions are zero-indexed?", ["Number of eliminations", "Survivor’s position", "Number of rounds", "Starting position"], 1],
+   ["In a circle of 7 people, every second person is eliminated, starting the count at position 1. Which position survives?", ["3", "5", "7", "1"], 2],
+   ["Why is the Josephus problem considered a circular elimination problem?", ["Because people are arranged in a straight line", "Because counting resumes from the next person in a circle", "Because all people are eliminated simultaneously", "Because the first person always survives"], 1],
+   ["There are 10 people standing in a circle. Every second person is eliminated until only one remains. Which position survives?", ["3", "5", "7", "9"], 1],
+   ["Which data structure is conceptually suitable for directly simulating the Josephus elimination process?", ["Stack", "Queue", "Circular linked list", "Binary search tree"], 2],
+   ["In a circle of 8 people, every third person is eliminated. Counting starts at position 1, and counting resumes from the next person. Which position survives?", ["1", "4", "7", "8"], 2],
+   ["For K = 2, which formula gives the survivor’s 1-based position when N is a power of 2 or any positive integer?", ["2N + 1", "2L + 1, where L = N − 2^⌊log₂N⌋", "N / 2", "N − 1"], 1],
+   ["There are 6 people in a circle. Every third person is eliminated, starting the count at position 1. Which position survives?", ["1", "2", "4", "5"], 0],
+   ["What is the time complexity of simulating the Josephus problem using a simple array where each elimination requires shifting the remaining elements?", ["O(1)", "O(log N)", "O(N)", "O(N²)"], 3],
+   ["There are 12 people standing in a circle. Every second person is eliminated. Which position survives?", ["7", "9", "10", "12"], 1],
+   ["In the Josephus recurrence, why is the result calculated using modulo n?", ["To sort the positions", "To keep the survivor’s position within the valid range", "To eliminate all even positions", "To calculate the number of people"], 1],
+   ["A circle contains 10 people. Every third person is eliminated, starting at position 1. Counting resumes from the next person after each elimination. Which position survives?", ["2", "3", "4", "5"], 2],
+   ["There are 16 people standing in a circle. Every second person is eliminated until only one remains. Which position survives?", ["1", "5", "9", "13"], 0],
+   ["In a circle of 11 people, every second person is eliminated, starting from position 1. Which position survives?", ["5", "7", "9", "11"], 1],
+   ["If the elimination interval K is equal to 1, which person survives in a circle of N people when counting begins at position 1?", ["First person", "Second person", "Last person", "Middle person"], 2],
+   ["There are 9 people in a circle. Every fourth person is eliminated, starting at position 1. Counting resumes from the next person. Which position survives?", ["1", "2", "6", "8"], 0],
+   ["In the Josephus problem, if N = 13 and K = 2, which position survives?", ["7", "9", "11", "13"], 2]
+  ]
+ },
+ {
+  "n": "Maze Solving",
+  "q": [
+   ["In a maze-solving problem, a cell can be visited only if it is inside the maze, is not blocked, and has not already been visited in the current path. Which condition prevents the algorithm from moving into an invalid cell?", ["Checking only the destination", "Checking boundaries, obstacles, and visited status", "Checking only the row number", "Checking only the column number"], 1],
+   ["A maze is represented by an N × N matrix containing 1 for open cells and 0 for blocked cells. What does the value 1 represent?", ["A wall", "An invalid position", "A traversable cell", "The destination only"], 2],
+   ["Why is backtracking useful in maze solving?", ["It permanently removes every visited cell", "It explores alternatives when the current path cannot reach the destination", "It always selects the shortest path", "It avoids checking obstacles"], 1],
+   ["A robot can move only right or down in a completely open 2 × 2 grid of cells, starting at the top-left cell and ending at the bottom-right cell. How many different paths are possible?", ["1", "2", "3", "4"], 1],
+   ["In a maze represented by an N × N matrix, what is the maximum number of cells that may need to be visited during a single DFS traversal?", ["N", "2N", "N²", "2N²"], 2],
+   ["Which approach is generally suitable when the objective is to find the shortest path in an unweighted maze?", ["DFS", "BFS", "Insertion Sort", "Binary Search"], 1],
+   ["A maze has a start cell and a destination cell, but every possible route to the destination is blocked. What should a correct maze-solving algorithm report?", ["Start cell is the destination", "Infinite paths", "No valid path exists", "Every blocked cell is reachable"], 2],
+   ["A maze has 5 rows and 5 columns. If every cell is open, how many cells are present in the maze?", ["10", "20", "25", "30"], 2],
+   ["Which statement about DFS-based maze solving is correct?", ["It always finds the shortest path", "It explores one path deeply before trying alternatives", "It never needs a visited array", "It can move only horizontally"], 1],
+   ["What is the worst-case time complexity of exploring every cell of an N × N maze using DFS with a visited array?", ["O(N)", "O(N log N)", "O(N²)", "O(N⁴)"], 2],
+   ["A maze-solving algorithm finds one valid path and immediately stops. Can it guarantee that the path is the shortest?", ["Yes, always", "No, not unless the search strategy guarantees shortest-path discovery", "Yes, if DFS is used", "Yes, if recursion is used"], 1],
+   ["In a recursive maze algorithm, what is the purpose of undoing a visited mark when backtracking?", ["To permanently block the cell", "To allow the cell to be considered in another candidate path", "To increase the maze size", "To remove the destination"], 1],
+   ["A maze contains 4 rows and 6 columns. What is the maximum number of distinct cells that can be explored?", ["10", "20", "24", "30"], 2],
+   ["Which condition should be checked before moving from the current cell to a neighboring cell in a maze?", ["The neighbor must be open, within bounds, and unvisited", "The neighbor must be in the first row", "The neighbor must be the destination", "The neighbor must have the same coordinates"], 0],
+   ["A maze has multiple possible paths from the start to the destination. Which modification is required if the goal is to find all valid paths rather than just one?", ["Stop after finding the first path", "Continue exploring alternatives and backtrack after recording each valid path", "Use binary search", "Ignore visited cells permanently"], 1]
+  ]
+ },
+ {
+  "n": "N Queens",
+  "q": [
+   ["The N Queens problem requires placing N queens on an N × N chessboard so that no two queens attack each other. Which condition must be satisfied?", ["No two queens share a row, column, or diagonal", "No two queens share a row only", "No two queens share a column only", "All queens must be on black squares"], 0],
+   ["Why is it sufficient to place exactly one queen in each row while solving the standard N Queens problem?", ["Queens cannot move diagonally", "Any valid solution must have exactly one queen in every row", "Queens cannot attack horizontally only", "Every row has a fixed queen position"], 1],
+   ["What is the result of the N Queens problem for N = 2?", ["One solution", "Two solutions", "No valid solution", "Four solutions"], 2],
+   ["What is the result of the N Queens problem for N = 3?", ["One solution", "Two solutions", "Four solutions", "No valid solution"], 3],
+   ["When placing a queen in a particular column, which previously placed queens must be checked for conflicts?", ["Only queens in the same row", "Queens in the same column and both diagonals", "Only queens in adjacent rows", "Every queen on the board must be checked in all directions"], 1],
+   ["A queen is placed at position (row, column). Which mathematical condition identifies another position on the same diagonal?", ["Same row or same column", "Equal row difference and column difference in absolute value", "Equal row and column values only", "Product of row and column is equal"], 1],
+   ["What should a backtracking algorithm do when no safe column is available for the queen in the current row?", ["Place the queen in an unsafe position", "Return to the previous row and try another column", "Stop without exploring alternatives", "Increase the board size"], 1],
+   ["How many queens must be placed on a standard 8 × 8 chessboard to solve the 8 Queens problem?", ["4", "6", "8", "16"], 2],
+   ["Which representation is commonly used to simplify the N Queens problem by storing the column position of the queen in each row?", ["One-dimensional array", "Linked list only", "Stack of strings", "Binary tree"], 0],
+   ["In a common backtracking implementation that places one queen per row, how many candidate columns may be checked at each row before safety filtering?", ["1", "N", "N²", "2N²"], 1],
+   ["Which of the following is a necessary property of every valid N Queens arrangement?", ["Every column contains exactly one queen", "Every diagonal contains exactly one queen", "All queens must occupy the same color squares", "Queens must be placed in consecutive columns"], 0],
+   ["What is the worst-case search space when a simple backtracking algorithm tries to place one queen per row by considering N columns in each row?", ["O(N)", "O(N²)", "O(N!)", "O(2N)"], 2],
+   ["Why is checking only the previous rows sufficient when queens are placed row by row from top to bottom?", ["Future rows are already occupied", "Only previously placed queens can conflict with the newly placed queen", "Diagonal attacks do not matter", "Queens cannot attack downward"], 1],
+   ["In the N Queens problem, what is the purpose of a safety-checking function?", ["To count the number of rows", "To verify that a new queen does not attack any previously placed queen", "To sort the queen positions", "To find the shortest diagonal"], 1],
+   ["How many valid solutions exist for the 1 Queens problem?", ["0", "1", "2", "4"], 1],
+   ["If a solution is found for N Queens and the algorithm is required to print every valid arrangement, what should it do after recording a solution?", ["Terminate immediately", "Continue backtracking to search for other arrangements", "Remove the chessboard", "Skip all remaining rows permanently"], 1],
+   ["Which optimization can improve the performance of N Queens backtracking by avoiding repeated diagonal scans?", ["Maintain sets or arrays for occupied columns and diagonals", "Sort the chessboard after every move", "Use linear search over all board cells", "Remove all previously placed queens"], 0],
+   ["In the N Queens problem, how many diagonals can potentially be indexed using row - column + N - 1 for an N × N board?", ["N", "2N - 1", "N²", "2N"], 1]
+  ]
+ },
+ {
+  "n": "Warnsdorff’s Algorithm",
+  "q": [
+   ["What is the objective of the Knight’s Tour problem?", ["Visit every square exactly once using a knight’s legal moves", "Place one knight in every row", "Capture all opposing pieces", "Reach a corner in the minimum number of moves"], 0],
+   ["Why does Warnsdorff’s Algorithm prefer a square with fewer onward moves?", ["To visit difficult-to-reach squares before they become inaccessible", "To maximize the number of repeated visits", "To avoid using knight moves", "To move toward the center only"], 0],
+   ["On a standard 8 × 8 chessboard, how many squares must a complete Knight’s Tour visit?", ["8", "32", "64", "128"], 2],
+   ["What does the degree of a square represent in Warnsdorff’s Algorithm?", ["Number of times the square has been visited", "Number of currently available unvisited squares reachable by a knight from that square", "Distance from the center", "Number of rows and columns"], 1],
+   ["A knight has three possible unvisited next squares. Their onward degrees are 2, 4, and 1. Which square should be selected according to Warnsdorff’s rule?", ["Degree 2", "Degree 4", "Degree 1", "Any square"], 2],
+   ["Which type of algorithmic strategy does Warnsdorff’s Algorithm primarily use?", ["Greedy", "Divide and Conquer", "Binary Search", "Dynamic Programming"], 0],
+   ["What should an implementation do if two candidate squares have the same minimum onward degree?", ["Always stop", "Apply a tie-breaking rule, such as choosing one candidate consistently or trying alternatives", "Visit both squares simultaneously", "Ignore both squares"], 1],
+   ["Why is Warnsdorff’s Algorithm considered a heuristic rather than a guaranteed solution method in every implementation?", ["It always visits squares randomly", "A locally best move does not necessarily guarantee a complete tour", "It does not use chess moves", "It only works on rectangular boards"], 1],
+   ["Which condition must be checked before considering a knight’s next move on a chessboard?", ["The destination square must be within bounds and unvisited", "The destination must be on the same row", "The destination must be a corner", "The destination must have a higher row number"], 0],
+   ["A knight is standing at a corner of an empty 8 × 8 chessboard. How many legal moves are available from that corner?", ["2", "3", "4", "6"], 0],
+   ["What is the purpose of marking a square as visited after the knight moves onto it?", ["To allow the knight to visit it again", "To prevent the knight from visiting the same square more than once", "To increase its onward degree", "To change the board size"], 1],
+   ["Which approach can be used when the greedy choices made by Warnsdorff’s Algorithm lead to a dead end?", ["Backtrack and try another candidate move", "Restart the board with fewer squares", "Ignore the dead end", "Visit an already visited square"], 0],
+   ["In a Knight’s Tour, how many moves are required to visit all 64 squares exactly once in an open tour?", ["62", "63", "64", "65"], 1],
+   ["What is the difference between an open Knight’s Tour and a closed Knight’s Tour?", ["An open tour visits only half the board", "A closed tour ends on a square from which the knight can legally return to its starting square", "An open tour allows repeated squares", "A closed tour does not visit every square"], 1],
+   ["If a knight has no unvisited legal moves before visiting all board squares, what does this indicate?", ["A complete tour is found", "The current path has reached a dead end", "The knight has moved legally to every square", "The board is automatically closed"], 1],
+   ["Which information is needed to calculate the onward degree of a candidate square?", ["Number of occupied rows", "Number of legal, unvisited knight moves from that square", "Total number of chess pieces", "Distance from the starting square"], 1],
+   ["What is the main advantage of Warnsdorff’s heuristic compared with blindly exploring every possible knight move?", ["It reduces unnecessary exploration by choosing constrained squares first", "It guarantees the shortest tour", "It eliminates the need to track visited squares", "It allows illegal moves"], 0]
+  ]
+ },
+ {
+  "n": "Hamiltonian Cycle",
+  "q": [
+   ["Which statement correctly distinguishes a Hamiltonian Cycle from an Eulerian Cycle?", ["Hamiltonian Cycle visits every edge exactly once; Eulerian visits every vertex", "Hamiltonian Cycle visits every vertex exactly once; Eulerian Cycle uses every edge exactly once", "Both require every edge to be visited exactly once", "Both require every vertex to be visited multiple times"], 1],
+   ["In a Hamiltonian Cycle, how many times can each vertex appear in the cycle, excluding the repeated starting vertex at the end?", ["Zero times", "Exactly once", "Exactly twice", "Any number of times"], 1],
+   ["A graph contains 5 vertices. A Hamiltonian Cycle must visit all vertices and return to the starting vertex. How many edges are included in the cycle?", ["4", "5", "6", "10"], 1],
+   ["Which of the following is a necessary condition for a graph to contain a Hamiltonian Cycle?", ["Every vertex must have degree at least 2", "Every vertex must have degree exactly 1", "The graph must contain no cycles", "Every vertex must be connected to only one other vertex"], 0],
+   ["Why is a Hamiltonian Cycle problem considered computationally difficult for general graphs?", ["It can require exploring many possible vertex arrangements", "It always has a unique solution", "It can be solved by sorting vertices", "It requires only one comparison"], 0],
+   ["A complete undirected graph contains 4 vertices. How many distinct Hamiltonian Cycles exist if rotations and reverse directions are considered equivalent?", ["1", "2", "3", "6"], 2, "The PDF key lists B (2), but (4−1)!/2 = 3 distinct cycles, so C is correct."],
+   ["In a backtracking solution for the Hamiltonian Cycle problem, what should be checked before adding a candidate vertex to the current path?", ["It must be adjacent to the previous vertex and not already present in the path", "It must have the largest label", "It must be the starting vertex", "It must have the highest degree"], 0],
+   ["If a Hamiltonian Cycle has been constructed for a graph, what must be checked before declaring success?", ["The last vertex must be connected to the starting vertex", "The last vertex must have the highest degree", "Every edge must be used", "The path must contain repeated vertices"], 0],
+   ["Which graph is guaranteed to contain a Hamiltonian Cycle when it has at least 3 vertices?", ["A complete graph", "A disconnected graph", "A graph with no edges", "A tree with more than one vertex"], 0],
+   ["A tree contains more than two vertices. Can it contain a Hamiltonian Cycle?", ["Yes, always", "No, because a tree contains no cycles", "Only if it is complete", "Only if every vertex has degree 2"], 1],
+   ["What is the worst-case time complexity of a straightforward backtracking algorithm for the Hamiltonian Cycle problem?", ["O(N)", "O(N log N)", "O(N!)", "O(log N)"], 2],
+   ["A graph has 6 vertices. A Hamiltonian Cycle must visit each vertex once before returning to the starting vertex. How many distinct vertex positions are there in the cycle, excluding the repeated starting vertex?", ["5", "6", "7", "12"], 1],
+   ["Which statement about a Hamiltonian Path is correct?", ["It visits every vertex exactly once but does not necessarily return to the starting vertex", "It visits every edge exactly once", "It must always be a cycle", "It can visit only half the vertices"], 0],
+   ["A connected graph has a vertex with degree 1. Can the graph contain a Hamiltonian Cycle?", ["Yes, always", "No, because every vertex in a Hamiltonian Cycle needs two incident cycle edges", "Only if the graph has an even number of vertices", "Only if it is a complete graph"], 1],
+   ["In a Hamiltonian Cycle backtracking algorithm, why is the starting vertex usually fixed before constructing the remaining path?", ["To avoid considering equivalent cycles that differ only by rotation", "To ensure the graph is complete", "To eliminate all edges", "To guarantee a shortest cycle"], 0],
+   ["What should a backtracking algorithm do if no unvisited adjacent vertex can be added to the current Hamiltonian path?", ["Accept the incomplete path", "Backtrack and try a different previous choice", "Repeat the same vertex", "Stop checking all other possibilities"], 1],
+   ["Which of the following statements is true for a Hamiltonian Cycle in an undirected graph?", ["Every vertex has exactly two incident edges belonging to the cycle", "Every vertex must have degree exactly two in the entire graph", "Every edge must belong to the cycle", "The graph must be bipartite"], 0],
+   ["A graph has 5 vertices. A path visits vertices A, B, C, D, and E exactly once. What additional condition is required for this path to become a Hamiltonian Cycle?", ["A and E must be connected by an edge", "A and C must be connected by an edge", "B and D must be connected by an edge", "C and E must be connected by an edge"], 0]
+  ]
+ }
+];
